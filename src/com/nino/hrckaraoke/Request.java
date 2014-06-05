@@ -1,0 +1,34 @@
+package com.nino.hrckaraoke;
+
+
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
+
+
+public class Request extends Fragment {
+		
+	@Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+		
+		 LayoutInflater lf = getActivity().getLayoutInflater();   
+        View view = lf.inflate(R.layout.request, null);
+       
+
+        
+        
+        return view;
+        
+       
+    }
+	
+
+
+
+}

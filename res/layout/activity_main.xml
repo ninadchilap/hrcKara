@@ -1,0 +1,88 @@
+<com.nino.hrckaraoke.MainLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+        
+         	<TextView
+                android:id="@+id/Select"
+                android:layout_width="wrap_content"
+                android:paddingLeft="10dp"
+                android:layout_height="50dip"
+                android:text="Select"
+                android:textColor="@android:color/black"
+                android:textSize="24dip" />  
+                
+         	 <TextView
+			     android:layout_width="match_parent"
+			     android:layout_height="1dp"
+			     android:background="#ffffff"
+			   
+			      />
+                
+         	
+
+        <ListView
+            android:id="@+id/menu_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            
+            android:cacheColorHint="#00000000" >
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+		
+        <!-- This acts as Actionbar -->
+        <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:background="#AB1616"
+	        android:orientation="horizontal" >
+            
+        
+            
+             <ImageButton
+		        android:id="@+id/button_menu"
+		    	android:layout_width="50dip"
+		    	android:layout_height="50dip"
+		    	 android:onClick="toggleMenu"
+		    	android:background="@drawable/states"
+		    	android:src="@drawable/options"
+		    	/>
+            <TextView
+			     android:layout_width="1dp"
+			     android:layout_height="fill_parent"
+			     android:background="#ffffff"
+			   
+			      />
+            <TextView
+			     android:layout_width="0dp"
+			     android:layout_height="fill_parent"
+			     android:text="Make Request"
+			     android:gravity="center_vertical"
+			     android:textSize="26dp"
+			     android:id="@+id/activity_main_content_title"
+			     android:layout_weight="1" />
+            
+        </LinearLayout>       
+        
+        <!-- This is where fragment will show up -->
+        <FrameLayout
+		    android:id="@+id/activity_main_content_fragment"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent" >
+        
+    	</FrameLayout>
+        
+    </LinearLayout>
+
+</com.nino.hrckaraoke.MainLayout>
