@@ -102,6 +102,7 @@ public class Login extends Activity {
                 Log.v("HRCAPP", se.toString());
                 //set request content type
                 se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+                
                 httppost.setEntity(se);
 
                 //send the POST request

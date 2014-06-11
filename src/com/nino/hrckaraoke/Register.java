@@ -13,6 +13,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
@@ -98,7 +99,7 @@ public class Register extends Activity {
 	public static String POST(String url) {
 		InputStream inputStream = null;
 		String result = "";
-		JSONObject jsonObject=null;
+		JSONObject jsonObject = null;
 		try {
 
 			// 1. create HttpClient
@@ -106,39 +107,45 @@ public class Register extends Activity {
 
 			// 2. make POST request to the given URL
 			HttpPost httpPost = new HttpPost(url);
+			httpPost.setHeader("Accept", "application/json");
+			httpPost.setHeader("Content-type", "application/json");
 
-			StringEntity se = new StringEntity(
-					" { \"field_name\":{\"und\":[{ \"value\":\""
-							+ name.getText().toString().trim()
-							+ "\",\"safe_value\":\""
-							+ name.getText().toString().trim() + "\"}]}}");
-			
-			
-	/*		","\"mail\":\""
-			+ email.getText().toString().trim()+"\",\"name\":\""
-			+ uname.getText().toString().trim()+"\"
-*/			
-			
+			StringEntity se = new StringEntity(" { \"mail\":\""
+					+ email.getText().toString().trim() + "\",\"name\":\""
+					+ uname.getText().toString().trim()
+					+ "\",\"field_name\":{\"und\":[{ \"value\":\""
+					+ name.getText().toString().trim() + "\",\"safe_value\":\""
+					+ name.getText().toString().trim()
+					+ "\"}]},\"field_phone_number\":{\"und\":[{ \"value\":\""
+					+ pass.getText().toString().trim() + "\"}]}}");
+
+			/*
+			 * ","\"mail\":\"" +
+			 * email.getText().toString().trim()+"\",\"name\":\"" +
+			 * uname.getText().toString().trim()+"\"
+			 */
+
 			se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,
 					"application/json"));
-			httpPost.setEntity(se); 
-			
-			HttpResponse httpResponse = httpclient.execute(httpPost);
-			   String jsonResponse = EntityUtils.toString(httpResponse.getEntity());
+			httpPost.setEntity(se);
 
-               jsonObject = new JSONObject(jsonResponse);
-               System.out.println("Hrcc "+jsonObject.toString());
+			HttpResponse httpResponse = httpclient.execute(httpPost);
+			String jsonResponse = EntityUtils
+					.toString(httpResponse.getEntity());
+
+			jsonObject = new JSONObject(jsonResponse);
+			System.out.println("Hrcc " + jsonObject.toString());
 
 			// 9. receive response as inputStream
-		/*	inputStream = httpResponse.getEntity().getContent();
-			System.out.println("Register "
-					+ convertInputStreamToString(inputStream));
-
-			// 10. convert inputstream to string
-			if (inputStream != null)
-				result = convertInputStreamToString(inputStream);
-			else
-				result = "Did not work!";*/
+			/*
+			 * inputStream = httpResponse.getEntity().getContent();
+			 * System.out.println("Register " +
+			 * convertInputStreamToString(inputStream));
+			 * 
+			 * // 10. convert inputstream to string if (inputStream != null)
+			 * result = convertInputStreamToString(inputStream); else result =
+			 * "Did not work!";
+			 */
 
 			/*
 			 * String json = "";
