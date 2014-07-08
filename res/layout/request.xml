@@ -9,69 +9,74 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:orientation="horizontal"
+        android:background="#AB1616" >
+        
+        <LinearLayout
+             android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:orientation="horizontal" >
+            >
+            
+            <Button
+        android:id="@+id/populartab"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Most Popular"
+        android:textSize="16dp"
+        
 
-        <EditText
-            android:id="@+id/editText1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="Search here..." >
+        android:gravity="center"
+       
+         
+        android:textColor="#ffffff"
 
-            <requestFocus />
-        </EditText>
+        />
+            
+                     </LinearLayout>
+            
+             <LinearLayout
+             android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal" 
+          android:background="@drawable/states"
+        >
+            
+            
+            <Button
+        android:id="@+id/prerequesttab"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Previous Request"
+        android:textSize="16dp"
+        android:gravity="center"
+      
+       
+         
+        android:textColor="#ffffff"
+
+        />
+            
+            </LinearLayout>
+
+       
+ 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/requestfragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9"
-        android:background="#0e709e"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        
+         >
         
        
 
-         <TabHost
-            android:id="@android:id/tabhost"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" >
-
-                <TabWidget
-                    android:id="@android:id/tabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
-                </TabWidget>
-
-                <FrameLayout
-                    android:id="@android:id/tabcontent"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
-
-                    <LinearLayout
-                        android:id="@+id/tab1"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" 
-                        android:orientation="horizontal"
-                        >
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/tab2"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                         android:orientation="horizontal" >
-                    </LinearLayout>
-
-                                    </FrameLayout>
-            </LinearLayout>
-        </TabHost>
+      
  
     </LinearLayout>
 

@@ -43,7 +43,7 @@ public class MainActivity extends FragmentActivity {
 		lvMenuItems = getResources().getStringArray(R.array.menu_items);
 		lvMenu = (ListView) findViewById(R.id.menu_listview);
 		lvMenu.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, lvMenuItems));
+				R.layout.menurow,R.id.menutxt, lvMenuItems));
 		lvMenu.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -99,10 +99,10 @@ public class MainActivity extends FragmentActivity {
 		else if (selectedItem.compareTo("Previous Request") == 0) {
 			fragment = new Previous();
 		}
-		else if (selectedItem.compareTo("HRC Karaoke Nights") == 0) {
+		else if (selectedItem.compareTo("HRC Karaoke Guide") == 0) {
 			fragment = new Guide();
 		}
-		else if (selectedItem.compareTo("Other Events") == 0) {
+		else if (selectedItem.compareTo("Explore Events") == 0) {
 			fragment = new Others();
 		}
 	

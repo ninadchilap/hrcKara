@@ -22,10 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-         <activity
-            android:name="com.nino.hrckaraoke.MainActivity"
-             >
+        <activity android:name="com.nino.hrckaraoke.MainActivity" >
         </activity>
         <activity
             android:name="com.nino.hrckaraoke.Request"
@@ -51,7 +48,12 @@
             android:name="com.nino.hrckaraoke.Guide"
             android:label="@string/title_activity_guide" >
         </activity>
+        <activity
+            android:name="com.nino.hrckaraoke.Welcome"
+            android:label="@string/title_activity_welcome" >
+        </activity>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" /> 
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

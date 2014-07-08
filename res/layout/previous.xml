@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal" 
-    android:background="#ffffff"
+    android:background="#e5e5e5"
     >
   
         <ListView
             android:id="@+id/livefeeds"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" 
-             android:background="#ffffff"
+             
              android:fastScrollEnabled="true">
         </ListView>
         

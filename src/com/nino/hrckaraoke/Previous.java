@@ -23,6 +23,7 @@ import android.widget.ListView;
 public class Previous extends Fragment {
 	
 	ArrayList<String> feedslist,livefeedslist;
+	
 	//ListView feedsview,livefeeds;
 	 public String session_id;
 	    public String session_name;
@@ -115,7 +116,7 @@ private class FetchItems extends AsyncTask<String, Void, JSONArray> {
         }
 
         //create array adapter and give it our list of nodes, pass context, layout and list of items
-    	ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,listItems);
+    	ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getActivity(),R.layout.feedsrow,R.id.feedtxt,listItems);
     	lst.setAdapter(arrayAdapter1);
     }
 }

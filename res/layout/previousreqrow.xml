@@ -16,7 +16,7 @@ android:layout_height="?android:attr/listPreferredItemHeight">
     >
    
     <TextView
-        android:id="@+id/feedtxt"
+        android:id="@+id/previousrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Display Name"
