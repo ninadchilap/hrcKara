@@ -1,5 +1,7 @@
 package com.nino.hrckaraoke;
 
+import java.util.ArrayList;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -24,7 +26,13 @@ public class MainActivity extends FragmentActivity {
 	ImageButton btMenu;
 	TextView tvTitle;
 	public String session_id;
-    public String session_name;
+	public String session_name;
+	ArrayList prgmName;
+	public static int[] prgmImages = { R.drawable.ic_launcher, R.drawable.ic_launcher,
+			R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher,
+			R.drawable.ic_launcher };
+	public static String[] prgmNameList = { "My Profile", "Make Request", "Previous Request",
+			"HRC Karaoke Guide", "Explore Events" };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,18 +40,16 @@ public class MainActivity extends FragmentActivity {
 		mLayout = (MainLayout) this.getLayoutInflater().inflate(
 				R.layout.activity_main, null);
 		setContentView(mLayout);
-		 Bundle extras = new Bundle();
-		    
-		    
-		    if (extras != null) {
-		        session_id = extras.getString("SESSION_ID");
-		        session_name = extras.getString("SESSION_NAME");
-		    }
+		Bundle extras = new Bundle();
+
+		if (extras != null) {
+			session_id = extras.getString("SESSION_ID");
+			session_name = extras.getString("SESSION_NAME");
+		}
 
 		lvMenuItems = getResources().getStringArray(R.array.menu_items);
 		lvMenu = (ListView) findViewById(R.id.menu_listview);
-		lvMenu.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.menurow,R.id.menutxt, lvMenuItems));
+		lvMenu.setAdapter(new CustomAdapter(this, prgmNameList,prgmImages));
 		lvMenu.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -72,8 +78,6 @@ public class MainActivity extends FragmentActivity {
 
 	}
 
-	
-
 	public void toggleMenu(View v) {
 		mLayout.toggleMenu();
 	}
@@ -93,19 +97,15 @@ public class MainActivity extends FragmentActivity {
 
 		if (selectedItem.compareTo("Make Request") == 0) {
 			fragment = new Request();
-		}  else if (selectedItem.compareTo("My Profile") == 0) {
+		} else if (selectedItem.compareTo("My Profile") == 0) {
 			fragment = new Profile();
-		}
-		else if (selectedItem.compareTo("Previous Request") == 0) {
+		} else if (selectedItem.compareTo("Previous Request") == 0) {
 			fragment = new Previous();
-		}
-		else if (selectedItem.compareTo("HRC Karaoke Guide") == 0) {
+		} else if (selectedItem.compareTo("HRC Karaoke Guide") == 0) {
 			fragment = new Guide();
-		}
-		else if (selectedItem.compareTo("Explore Events") == 0) {
+		} else if (selectedItem.compareTo("Explore Events") == 0) {
 			fragment = new Others();
 		}
-	
 
 		if (fragment != null) {
 			ft.replace(R.id.activity_main_content_fragment, fragment);
@@ -115,10 +115,11 @@ public class MainActivity extends FragmentActivity {
 		mLayout.toggleMenu();
 	}
 
-	public void setCountText(String text){
-	    tvTitle = (TextView) findViewById(R.id.activity_main_content_title);
-	    tvTitle.setText(text);
+	public void setCountText(String text) {
+		tvTitle = (TextView) findViewById(R.id.activity_main_content_title);
+		tvTitle.setText(text);
 	}
+
 	@Override
 	public void onBackPressed() {
 		if (mLayout.isMenuShown()) {
