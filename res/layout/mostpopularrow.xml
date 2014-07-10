@@ -16,15 +16,25 @@ android:layout_height="?android:attr/listPreferredItemHeight">
     >
    
     <TextView
-        android:id="@+id/popularrow"
+        android:id="@+id/popularsong"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Display Name"
         android:textSize="16dp"
-        android:layout_marginTop="10dp" 
+         
 
         />
  
+     <TextView
+        android:id="@+id/popularartist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Display Name"
+        android:textSize="16dp"
+        android:textColor="#aaaaaa"
+         
+
+        />
 
 
 

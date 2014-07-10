@@ -26,13 +26,14 @@
         android:id="@+id/menutxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+         android:layout_gravity="center_vertical"
         android:text="Display Name"
         android:textSize="16dp"
         android:paddingLeft="10dp"
-        android:paddingTop="12dp"
+      
        
          
-        android:textColor="#ffffff"
+        android:textColor="#aaffffff"
 
         />
  

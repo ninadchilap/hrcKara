@@ -28,9 +28,9 @@ public class MainActivity extends FragmentActivity {
 	public String session_id;
 	public String session_name;
 	ArrayList prgmName;
-	public static int[] prgmImages = { R.drawable.ic_launcher, R.drawable.ic_launcher,
-			R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher,
-			R.drawable.ic_launcher };
+	public static int[] prgmImages = { R.drawable.menuprofile, R.drawable.menurequest,
+			R.drawable.menuprevious, R.drawable.menukaraokeguide, R.drawable.menuexplore
+			};
 	public static String[] prgmNameList = { "My Profile", "Make Request", "Previous Request",
 			"HRC Karaoke Guide", "Explore Events" };
 
