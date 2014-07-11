@@ -2,6 +2,7 @@ package com.nino.hrckaraoke;
 
 import java.util.ArrayList;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -28,6 +30,7 @@ public class MainActivity extends FragmentActivity {
 	public String session_id;
 	public String session_name;
 	ArrayList prgmName;
+	ImageButton search;
 	public static int[] prgmImages = { R.drawable.menuprofile, R.drawable.menurequest,
 			R.drawable.menuprevious, R.drawable.menukaraokeguide, R.drawable.menuexplore
 			};
@@ -46,6 +49,9 @@ public class MainActivity extends FragmentActivity {
 			session_id = extras.getString("SESSION_ID");
 			session_name = extras.getString("SESSION_NAME");
 		}
+		
+		search=(ImageButton)findViewById(R.id.search);
+		
 
 		lvMenuItems = getResources().getStringArray(R.array.menu_items);
 		lvMenu = (ListView) findViewById(R.id.menu_listview);
@@ -57,6 +63,18 @@ public class MainActivity extends FragmentActivity {
 				onMenuItemClick(parent, view, position, id);
 			}
 
+		});
+		
+		search.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				 Intent intent = new Intent(MainActivity.this, Search.class);
+		            startActivity(intent);
+				
+			}
 		});
 
 		btMenu = (ImageButton) findViewById(R.id.button_menu);
@@ -96,14 +114,23 @@ public class MainActivity extends FragmentActivity {
 		Fragment fragment = null;
 
 		if (selectedItem.compareTo("Make Request") == 0) {
+			
+			search.setVisibility(View.VISIBLE);
+
 			fragment = new Request();
 		} else if (selectedItem.compareTo("My Profile") == 0) {
+			
+			search.setVisibility(View.GONE);
 			fragment = new Profile();
 		} else if (selectedItem.compareTo("Previous Request") == 0) {
+			
+			search.setVisibility(View.GONE);
 			fragment = new Previous();
 		} else if (selectedItem.compareTo("HRC Karaoke Guide") == 0) {
+			search.setVisibility(View.GONE);
 			fragment = new Guide();
 		} else if (selectedItem.compareTo("Explore Events") == 0) {
+			search.setVisibility(View.GONE);
 			fragment = new Others();
 		}
 

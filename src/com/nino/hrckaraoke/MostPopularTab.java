@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.provider.MediaStore.MediaColumns;
 import android.provider.MediaStore.Video.VideoColumns;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,10 +55,10 @@ public class MostPopularTab extends Fragment {
 		popularsongs.add("Paradise");
 
 
-		ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(
+		/*ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(
 				getActivity(), R.layout.mostpopularrow, R.id.popularsong,
 				popularsongs);
-		popularlist.setAdapter(arrayAdapter1);
+		popularlist.setAdapter(arrayAdapter1);*/
 		
 	    new FetchItems().execute();
 
@@ -115,20 +116,22 @@ public class MostPopularTab extends Fragment {
 	        ListView lst = (ListView) getActivity().findViewById(R.id.popularlist);
 
 	        //create the ArrayList to store the titles of nodes
-	        ArrayList<String> listItems=new ArrayList<String>();
+	        ArrayList<String> popularsonglistItems=new ArrayList<String>();
+	        ArrayList<String> popularartlistItems=new ArrayList<String>();
 
 	        //iterate through JSON to read the title of nodes
 	        for(int i=0;i<result.length();i++){
 	            try {
-	            	if((result.getJSONObject(i).getString("type").toString()).equalsIgnoreCase("song"))
-	                listItems.add(result.getJSONObject(i).getString("title").toString());
+	            	
+	                popularartlistItems.add(result.getJSONObject(i).getString("node_title").toString());
+	            	popularsonglistItems.add(result.getJSONObject(i).getString("nid").toString());
 	            } catch (Exception e) {
 	                Log.v("Error adding article", e.getMessage());
 	            }
 	        }
 
 	        //create array adapter and give it our list of nodes, pass context, layout and list of items
-	    	ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getActivity(),R.layout.feedsrow,R.id.feedtxt,listItems);
+	    	PopularAdapter arrayAdapter1 = new PopularAdapter(getActivity(),popularsonglistItems,popularartlistItems);
 	    	lst.setAdapter(arrayAdapter1);
 	    }
 	}
@@ -139,16 +142,18 @@ public class MostPopularTab extends Fragment {
 	
 	// adapter for list view
 	public class PopularAdapter extends BaseAdapter {
-		String[] popularsong;
+		 ArrayList<String> popularsong=new ArrayList<String>();
+	        ArrayList<String> popularartist=new ArrayList<String>();
+		
 		Context context;
-		String[] popularartist;
+		
 		 LayoutInflater inflater = null;
 
-		public PopularAdapter(MainActivity mainActivity, String[] popularsonglist,
-				String[] popularartistlist) {
+		public PopularAdapter(FragmentActivity fragmentActivity, ArrayList<String> popularsonglist,
+				ArrayList<String> popularartistlist) {
 			// TODO Auto-generated constructor stub
 			popularsong = popularsonglist;
-			context = mainActivity;
+			context = fragmentActivity;
 			popularartist = popularartistlist;
 			inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -157,7 +162,7 @@ public class MostPopularTab extends Fragment {
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return popularsong.length;
+			return popularsong.size();
 		}
 
 		@Override
@@ -185,8 +190,8 @@ public class MostPopularTab extends Fragment {
 			rowView = inflater.inflate(R.layout.menurow, null);
 			holder.popsong = (TextView) rowView.findViewById(R.id.popularsong);
 			holder.popart = (TextView) rowView.findViewById(R.id.popularartist);
-			holder.popsong.setText(popularsong[position]);
-			holder.popart.setText(popularartist[position]);
+			holder.popsong.setText(popularsong.indexOf(position));
+			holder.popart.setText(popularartist.indexOf(position));
 			
 			return rowView;
 		}

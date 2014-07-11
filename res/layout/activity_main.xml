@@ -67,12 +67,29 @@
 
             <TextView
                 android:id="@+id/activity_main_content_title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="Make Request"
                 android:textColor="#ffffff"
-                android:textSize="22dp" />
+                android:textSize="22dp"
+                android:paddingLeft="20dp" />
+            
+              <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            /> 
+
+            <ImageButton
+                android:id="@+id/search"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/search"
+                 android:background="@drawable/states"
+              
+                 />
+
         </LinearLayout>
 
         <!-- This is where fragment will show up -->
