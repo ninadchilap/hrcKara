@@ -102,7 +102,7 @@ public class MainActivity extends FragmentActivity {
 
 	private void onMenuItemClick(AdapterView<?> parent, View view,
 			int position, long id) {
-		String selectedItem = lvMenuItems[position];
+		String selectedItem = prgmNameList[position];
 		String currentItem = tvTitle.getText().toString();
 		if (selectedItem.compareTo(currentItem) == 0) {
 			mLayout.toggleMenu();
@@ -118,7 +118,15 @@ public class MainActivity extends FragmentActivity {
 			search.setVisibility(View.VISIBLE);
 
 			fragment = new Request();
-		} else if (selectedItem.compareTo("My Profile") == 0) {
+		}
+		else if (selectedItem.compareTo("Your Request") == 0) {
+			
+			search.setVisibility(View.GONE);
+
+			fragment = new YourRequest();
+		} 
+		
+		else if (selectedItem.compareTo("My Profile") == 0) {
 			
 			search.setVisibility(View.GONE);
 			fragment = new Profile();

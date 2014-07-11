@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="#e5e5e5">
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+     android:layout_marginLeft="6dp"
+    android:layout_marginRight="6dp"
+    android:layout_marginTop="4dp"
+   
+    android:background="@drawable/card"
+    >
+    
+         <TextView
+        android:id="@+id/mysong"
+        android:paddingTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Display Name"
+        android:textSize="16dp"
+         
+
+        />
+ 
+     <TextView
+        android:id="@+id/myartist"
+        android:paddingBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Display Name"
+        android:textSize="16dp"
+        android:textColor="#aaaaaa"
+         
+
+        />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+      
+        android:orientation="horizontal" 
+      >
+     
+        <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+             android:layout_marginLeft="6dp"
+        android:background="@drawable/card"
+      android:layout_marginRight="1dp"
+        android:orientation="horizontal" 
+      >
+       <TextView
+        android:id="@+id/popularartist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Time"
+        android:textSize="16dp"
+        android:textColor="#aaaaaa"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:gravity="center"
+         
+
+        />
+      
+            </LinearLayout>
+            
+        <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+             android:layout_marginRight="6dp"
+        android:layout_marginLeft="1dp"
+      android:background="@drawable/card"
+        android:orientation="horizontal" 
+      >
+      
+             <TextView
+        android:id="@+id/cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="cancel"
+        android:textSize="16dp"
+        android:textColor="#aaaaaa"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:gravity="center"
+         
+
+        />
+      
+            </LinearLayout>
+     </LinearLayout>
+
+</LinearLayout>

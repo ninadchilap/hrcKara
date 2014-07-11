@@ -9,59 +9,66 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 
-import com.nino.hrckaraoke.CustomAdapter.Holder;
-
-
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore.MediaColumns;
-import android.provider.MediaStore.Video.VideoColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class MostPopularTab extends Fragment {
 
-	ArrayList<String> popularsongs;
+
 	ListView popularlist;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.mostpopulartab, null);
-		popularsongs = new ArrayList<String>();
 
 		popularlist = (ListView) view.findViewById(R.id.popularlist);
-		popularsongs.add("Nothing Else Matters");
-		popularsongs.add("Stairway to Heaven ");
-		popularsongs.add("Fade to black");
-		popularsongs.add("Zombie");
-		popularsongs.add("No more lies");
-		popularsongs.add("Hotel california");
-		popularsongs.add("Smoke on Water");
-		popularsongs.add("Comfortably Numb");
-
-		popularsongs.add("Wish You Were Here");
-
-		popularsongs.add("Paradise");
-
-
-		/*ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(
-				getActivity(), R.layout.mostpopularrow, R.id.popularsong,
-				popularsongs);
-		popularlist.setAdapter(arrayAdapter1);*/
 		
 	    new FetchItems().execute();
+	    
+		popularlist.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view,
+			int position, long id) {
+			TextView mysongtxt = (TextView) view.findViewById(R.id.popularsong);
+			TextView myartisttxt = (TextView) view.findViewById(R.id.popularartist);
 
+
+			String myartist = myartisttxt.getText().toString();
+			String mysong = mysongtxt.getText().toString();
+			
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			YourRequest fragment = new YourRequest();
+			Bundle args = new Bundle();
+			args.putString("sendmysong", mysong);
+			args.putString("sendmyartist", myartist);
+
+			fragment.setArguments(args);
+			ft.replace(R.id.activity_main_content_fragment, fragment);
+			//ft.addToBackStack(null);
+			ft.commit(); 
+			((MainActivity) getActivity()).setCountText("Your Request");
+
+			((MainActivity) getActivity()).prgmNameList[1]="Your Request";
+
+
+		
+
+			}
+			});
 
 		return view;
 	}
@@ -123,8 +130,8 @@ public class MostPopularTab extends Fragment {
 	        for(int i=0;i<result.length();i++){
 	            try {
 	            	
-	                popularartlistItems.add(result.getJSONObject(i).getString("node_title").toString());
-	            	popularsonglistItems.add(result.getJSONObject(i).getString("nid").toString());
+	                popularartlistItems.add(result.getJSONObject(i).getString("nid").toString());
+	            	popularsonglistItems.add(result.getJSONObject(i).getString("node_title").toString());
 	            } catch (Exception e) {
 	                Log.v("Error adding article", e.getMessage());
 	            }
@@ -187,11 +194,11 @@ public class MostPopularTab extends Fragment {
 			// TODO Auto-generated method stub
 			Holder holder = new Holder();
 			View rowView;
-			rowView = inflater.inflate(R.layout.menurow, null);
+			rowView = inflater.inflate(R.layout.mostpopularrow,parent, false);
 			holder.popsong = (TextView) rowView.findViewById(R.id.popularsong);
 			holder.popart = (TextView) rowView.findViewById(R.id.popularartist);
-			holder.popsong.setText(popularsong.indexOf(position));
-			holder.popart.setText(popularartist.indexOf(position));
+			holder.popsong.setText(popularsong.get(position));
+			holder.popart.setText(popularartist.get(position));
 			
 			return rowView;
 		}
