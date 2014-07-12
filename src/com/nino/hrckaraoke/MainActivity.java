@@ -1,6 +1,7 @@
 package com.nino.hrckaraoke;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,16 +9,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity {
@@ -32,10 +29,12 @@ public class MainActivity extends FragmentActivity {
 	ArrayList prgmName;
 	ImageButton search;
 	public static int[] prgmImages = { R.drawable.menuprofile, R.drawable.menurequest,
-			R.drawable.menuprevious, R.drawable.menukaraokeguide, R.drawable.menuexplore
+			R.drawable.menuprevious, R.drawable.menukaraokeguide, R.drawable.menuexplore,R.drawable.ic_launcher
 			};
 	public static String[] prgmNameList = { "My Profile", "Make Request", "Previous Request",
-			"HRC Karaoke Guide", "Explore Events" };
+			"HRC Karaoke Guide", "Explore Events","Logout" };
+	
+	SessionManager session;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +43,21 @@ public class MainActivity extends FragmentActivity {
 				R.layout.activity_main, null);
 		setContentView(mLayout);
 		Bundle extras = new Bundle();
+        session = new SessionManager(getApplicationContext());                
+
 
 		if (extras != null) {
 			session_id = extras.getString("SESSION_ID");
 			session_name = extras.getString("SESSION_NAME");
 		}
+		
+        session.checkLogin();
+        
+        HashMap<String, String> user = session.getUserDetails();
+        
+        // name
+        String name = user.get(SessionManager.KEY_SESSIONID);
+        
 		
 		search=(ImageButton)findViewById(R.id.search);
 		
@@ -141,6 +150,8 @@ public class MainActivity extends FragmentActivity {
 			search.setVisibility(View.GONE);
 			fragment = new Others();
 		}
+		else if (selectedItem.compareTo("Logout") == 0) {
+            session.logoutUser();		}
 
 		if (fragment != null) {
 			ft.replace(R.id.activity_main_content_fragment, fragment);

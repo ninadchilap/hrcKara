@@ -32,6 +32,7 @@ public class Login extends Activity {
 
 	TextView forgotpass,notregistered;
 	Button btn_login;
+    SessionManager session;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,8 @@ public class Login extends Activity {
 		forgotpass=(TextView)findViewById(R.id.forgotpassword);
 		notregistered=(TextView)findViewById(R.id.notregister);
 		btn_login=(Button)findViewById(R.id.login_button);
+		
+        session = new SessionManager(getApplicationContext());                
 		
 		btn_login.setOnClickListener(new OnClickListener() {
 
@@ -96,6 +99,8 @@ public class Login extends Activity {
                 //extract the username and password from UI elements and create a JSON object
                 json.put("username", username.getText().toString().trim());
                 json.put("password", password.getText().toString().trim());
+                
+                
 
                 //add serialised JSON object into POST request
                 StringEntity se = new StringEntity(json.toString());
@@ -117,6 +122,8 @@ public class Login extends Activity {
                 System.out.println("Hrcc "+jsonObject.toString());
                 session_name=jsonObject.getString("session_name");
                 session_id=jsonObject.getString("sessid");
+                
+                session.createLoginSession( session_id);
              
             
 
