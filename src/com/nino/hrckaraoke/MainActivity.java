@@ -24,7 +24,7 @@ public class MainActivity extends FragmentActivity {
 
 	MainLayout mLayout;
 	private ListView lvMenu;
-	private String[] lvMenuItems;
+	//private String[] lvMenuItems;
 	ImageButton btMenu;
 	TextView tvTitle;
 	public String session_id;
@@ -53,7 +53,7 @@ public class MainActivity extends FragmentActivity {
 		search=(ImageButton)findViewById(R.id.search);
 		
 
-		lvMenuItems = getResources().getStringArray(R.array.menu_items);
+		//lvMenuItems = getResources().getStringArray(R.array.menu_items);
 		lvMenu = (ListView) findViewById(R.id.menu_listview);
 		lvMenu.setAdapter(new CustomAdapter(this, prgmNameList,prgmImages));
 		lvMenu.setOnItemClickListener(new OnItemClickListener() {
