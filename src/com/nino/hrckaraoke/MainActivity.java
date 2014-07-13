@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -26,6 +27,8 @@ public class MainActivity extends FragmentActivity {
 	TextView tvTitle;
 	public String session_id;
 	public String session_name;
+	
+	 String sesid,sesname;
 	ArrayList prgmName;
 	ImageButton search;
 	public static int[] prgmImages = { R.drawable.menuprofile, R.drawable.menurequest,
@@ -56,7 +59,11 @@ public class MainActivity extends FragmentActivity {
         HashMap<String, String> user = session.getUserDetails();
         
         // name
-        String name = user.get(SessionManager.KEY_SESSIONID);
+         sesid = user.get(SessionManager.KEY_SESSIONID);
+        sesname = user.get(SessionManager.KEY_SESSIONNAME);
+        
+        Log.d("Session name ", sesid +"   " +sesname);
+        
         
 		
 		search=(ImageButton)findViewById(R.id.search);

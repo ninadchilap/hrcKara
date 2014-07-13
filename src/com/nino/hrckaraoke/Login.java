@@ -123,7 +123,7 @@ public class Login extends Activity {
                 session_name=jsonObject.getString("session_name");
                 session_id=jsonObject.getString("sessid");
                 
-                session.createLoginSession( session_id);
+                session.createLoginSession( session_name,session_id);
              
             
 
@@ -140,8 +140,8 @@ public class Login extends Activity {
         protected void onPostExecute(JSONObject result) {
         	
         	
-        	/*if(result!=null)
-        	{*/
+        	if(result!=null)
+        	{
             //create an intent to start the ListActivity
             Intent intent = new Intent(Login.this, MainActivity.class);
             //pass the session_id and session_name to ListActivity
@@ -153,7 +153,7 @@ public class Login extends Activity {
             finish();
             }
         	
-        /*	else
+        	else
         	{
         		AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
         	      //  builder.setIcon(R.drawable.ic_launcher);
@@ -177,14 +177,11 @@ public class Login extends Activity {
         	        alert.show();
         	       
 
-        	}*/
-       // }
+        	}
+        }
     }
 
-    //click listener for doLogin button
-    public void doLoginButton_click(View view){
-        new LoginProcess().execute();
-    }
+   
 
 
     @Override

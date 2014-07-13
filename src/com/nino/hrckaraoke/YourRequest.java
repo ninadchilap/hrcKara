@@ -1,5 +1,7 @@
 package com.nino.hrckaraoke;
 
+import java.util.HashMap;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +11,10 @@ import android.widget.TextView;
 
 public class YourRequest extends Fragment {
 	
+	SessionManager session;
+	String sesid,sesname;
+
+	
 @Override
 public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
@@ -16,6 +22,15 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
     
     Bundle bundle = this.getArguments();
     if(bundle != null){
+    	
+    	 session = new SessionManager(getActivity().getApplicationContext()); 
+    	
+    	 HashMap<String, String> user = session.getUserDetails();
+         
+         // name
+         sesid = user.get(SessionManager.KEY_SESSIONID);
+         sesname = user.get(SessionManager.KEY_SESSIONNAME);
+         
        String recmysong = bundle.getString("sendmysong");
        String recmyartist = bundle.getString("sendmyartist");
        

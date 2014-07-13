@@ -50,6 +50,8 @@ public class MostPopularTab extends Fragment {
 			String myartist = myartisttxt.getText().toString();
 			String mysong = mysongtxt.getText().toString();
 			
+			
+			
 			FragmentTransaction ft = getFragmentManager().beginTransaction();
 			YourRequest fragment = new YourRequest();
 			Bundle args = new Bundle();
