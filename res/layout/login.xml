@@ -113,7 +113,8 @@
                         android:hint="Username"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:text="admin" />
 
                     <EditText
                         android:id="@+id/password"
@@ -125,7 +126,8 @@
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:text="admin" />
 
                     <Button
                         android:id="@+id/login_button"

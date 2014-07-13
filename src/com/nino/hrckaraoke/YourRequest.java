@@ -10,7 +10,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 
-import com.nino.hrckaraoke.MostPopularTab.PopularAdapter;
+//import com.nino.hrckaraoke.MostPopularTab.PopularAdapter;
 
 import android.os.AsyncTask;
 import android.os.Bundle;

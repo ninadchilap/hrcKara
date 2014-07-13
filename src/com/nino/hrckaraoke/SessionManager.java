@@ -46,19 +46,13 @@ public class SessionManager {
     public void createLoginSession(String sessionname,String sessionId,String csrf){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
-         
         
         editor.putString(KEY_SESSIONNAME, sessionname);
          
-        
-      
-        
         editor.putString(KEY_SESSIONID, sessionId);
         
         editor.putString(KEY_CSRF, csrf);
 
-         
-        
         editor.commit();
     }  
      
@@ -95,7 +89,7 @@ public class SessionManager {
         user.put(KEY_SESSIONNAME, pref.getString(KEY_SESSIONNAME, null));
          
         // user email id
-       // user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
+        // user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
         
         user.put(KEY_SESSIONID, pref.getString(KEY_SESSIONID, null));
         
