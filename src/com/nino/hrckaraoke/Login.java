@@ -33,6 +33,9 @@ public class Login extends Activity {
 	TextView forgotpass,notregistered;
 	Button btn_login;
     SessionManager session;
+    public String session_name;
+    public String session_id;
+    public String csrf;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,8 @@ public class Login extends Activity {
 		forgotpass=(TextView)findViewById(R.id.forgotpassword);
 		notregistered=(TextView)findViewById(R.id.notregister);
 		btn_login=(Button)findViewById(R.id.login_button);
+		
+		csrf=null;
 		
         session = new SessionManager(getApplicationContext());                
 		
@@ -70,8 +75,9 @@ public class Login extends Activity {
 		});
 	 }
 	
-	public String session_name;
-    public String session_id;
+	
+    
+    
 
 
     //background task to login into Drupal
@@ -123,7 +129,7 @@ public class Login extends Activity {
                 session_name=jsonObject.getString("session_name");
                 session_id=jsonObject.getString("sessid");
                 
-                session.createLoginSession( session_name,session_id);
+                session.createLoginSession( session_name,session_id,csrf);
              
             
 

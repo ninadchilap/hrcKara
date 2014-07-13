@@ -20,7 +20,7 @@
                 android:layout_height="80dp"
                 android:layout_gravity="center_vertical"
                 android:paddingTop="10dp"
-                android:src="@drawable/ic_launcher" />
+                android:src="@drawable/faceimg" />
         </LinearLayout>
 
         <TextView
