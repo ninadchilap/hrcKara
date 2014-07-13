@@ -1,5 +1,6 @@
 package com.nino.hrckaraoke;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -20,11 +21,14 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class MostPopularTab extends Fragment {
 
@@ -37,7 +41,7 @@ public class MostPopularTab extends Fragment {
 		View view = inflater.inflate(R.layout.mostpopulartab, null);
 		
 		// Tag used to cancel the request
-		String url = "http://anujkothari.com/hrckaraoke/androidservice/views/current_user";
+		String url = "http://anujkothari.com/hrckaraoke/androidservice/views/popular_requests";
 		Context context = getActivity();
 		
 		SessionManager session = new SessionManager(context);
@@ -51,22 +55,44 @@ public class MostPopularTab extends Fragment {
         final String token = user.get(SessionManager.KEY_CSRF);
         Log.e("HRC",sesid +"   " +sesname+"   " +token);
         
-        ProgressDialog pDialog = new ProgressDialog(context);
-		pDialog.setMessage("Loading...");
-		//pDialog.show();    
+        final ProgressDialog pDialog = new ProgressDialog(context);
+		pDialog.setMessage("Fetching most requested songs...");
+		pDialog.show();    
 		         
 		JsonArrayRequest req = new JsonArrayRequest(Method.GET, url, 
 			new Response.Listener<JSONArray>() {
                 @Override
-				public void onResponse(JSONArray response) {
+				public void onResponse(JSONArray result) {
 					// TODO Auto-generated method stub
-                	Log.e("HRC",response.toString());
+                	//Log.e("HRC",response.toString());
+                	pDialog.hide();
+                	//get the ListView UI element
+        	        ListView lst = (ListView) getActivity().findViewById(R.id.popularlist);
+
+        	        //create the ArrayList to store the titles of nodes
+        	        ArrayList<String> popularsonglistItems=new ArrayList<String>();
+        	        ArrayList<String> popularartlistItems=new ArrayList<String>();
+
+        	        //iterate through JSON to read the title of nodes
+        	        for(int i=0;i<result.length();i++){
+        	            try {
+        	            	
+        	                popularartlistItems.add(result.getJSONObject(i).getString("nid").toString());
+        	            	popularsonglistItems.add(result.getJSONObject(i).getString("node_title").toString());
+        	            } catch (Exception e) {
+        	                Log.v("Error adding article", e.getMessage());
+        	            }
+        	        }
+
+        	        //create array adapter and give it our list of nodes, pass context, layout and list of items
+        	    	PopularAdapter arrayAdapter1 = new PopularAdapter(getActivity(),popularsonglistItems,popularartlistItems);
+        	    	lst.setAdapter(arrayAdapter1);
 				}
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.d("HRC", "Error: " + error.toString());
-                    //pDialog.hide();
+                    pDialog.hide();
                 }
             }) {
  			public Map<String, String> getHeaders() throws AuthFailureError {
@@ -85,4 +111,63 @@ public class MostPopularTab extends Fragment {
 		
 		return view;
 	}
+	
+	// adapter for list view
+	public class PopularAdapter extends BaseAdapter {
+		 ArrayList<String> popularsong=new ArrayList<String>();
+	        ArrayList<String> popularartist=new ArrayList<String>();
+		
+		Context context;
+		
+		 LayoutInflater inflater = null;
+
+		public PopularAdapter(FragmentActivity fragmentActivity, ArrayList<String> popularsonglist,
+				ArrayList<String> popularartistlist) {
+			// TODO Auto-generated constructor stub
+			popularsong = popularsonglist;
+			context = fragmentActivity;
+			popularartist = popularartistlist;
+			inflater = (LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		}
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return popularsong.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return position;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return position;
+		}
+
+		public class Holder {
+			TextView popart;
+			TextView popsong;
+		}
+
+		@Override
+		public View getView(final int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			Holder holder = new Holder();
+			View rowView;
+			rowView = inflater.inflate(R.layout.mostpopularrow,parent, false);
+			holder.popsong = (TextView) rowView.findViewById(R.id.popularsong);
+			holder.popart = (TextView) rowView.findViewById(R.id.popularartist);
+			holder.popsong.setText(popularsong.get(position));
+			holder.popart.setText(popularartist.get(position));
+			
+			return rowView;
+		}
+
+	}
+		
 }
