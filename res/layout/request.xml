@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+   android:background="#e5e5e5"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -10,25 +10,30 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal"
-        android:background="#AB1616" >
+        android:background="#d9533e" >
         
         <LinearLayout
              android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="horizontal" >
-            >
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
+        android:paddingLeft="12dp"
+         >
             
+           
             <Button
         android:id="@+id/populartab"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Most Popular"
         android:textSize="16dp"
+        android:paddingLeft="10dp"
+        
         
 
         android:gravity="center"
-       
+        android:background="@drawable/btn_request_left_active"       
          
         android:textColor="#ffffff"
 
@@ -41,7 +46,9 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="horizontal" 
-          android:background="@drawable/states"
+         android:paddingBottom="8dp"
+        android:paddingRight="12dp"
+         
         >
             
             
@@ -52,12 +59,18 @@
         android:text="Previous Request"
         android:textSize="16dp"
         android:gravity="center"
+        android:background="@drawable/btn_request_right_inactive"
       
        
          
         android:textColor="#ffffff"
 
         />
+              <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />    
             
             </LinearLayout>
 
