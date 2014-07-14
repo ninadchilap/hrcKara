@@ -32,6 +32,9 @@ public class SessionManager {
      
     // Email address (make variable public to access from outside)
     public static final String KEY_CSRF = "csrf";
+    
+    public static final String KEY_UID = "uid";
+
      
     // Constructor
     public SessionManager(Context context){
@@ -43,22 +46,18 @@ public class SessionManager {
     /**
      * Create login session
      * */
-    public void createLoginSession(String sessionname,String sessionId,String csrf){
+    public void createLoginSession(String sessionname,String sessionId,String csrf,String uid ){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
-         
         
         editor.putString(KEY_SESSIONNAME, sessionname);
          
-        
-      
-        
         editor.putString(KEY_SESSIONID, sessionId);
         
         editor.putString(KEY_CSRF, csrf);
-
-         
         
+        editor.putString(KEY_UID, uid);
+
         editor.commit();
     }  
      
@@ -95,11 +94,15 @@ public class SessionManager {
         user.put(KEY_SESSIONNAME, pref.getString(KEY_SESSIONNAME, null));
          
         // user email id
-       // user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
+        // user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
         
         user.put(KEY_SESSIONID, pref.getString(KEY_SESSIONID, null));
         
         user.put(KEY_CSRF, pref.getString(KEY_CSRF, null));
+        
+        user.put(KEY_UID, pref.getString(KEY_UID, null));
+        
+        
          
         // return user
         return user;

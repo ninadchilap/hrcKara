@@ -1,21 +1,17 @@
 package com.nino.hrckaraoke;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,128 +22,183 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request.Method;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
 public class MostPopularTab extends Fragment {
 
 
 	ListView popularlist;
+	String uid=null;
+	ArrayList<String> song_id;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.mostpopulartab, null);
-
-		popularlist = (ListView) view.findViewById(R.id.popularlist);
 		
-	    new FetchItems().execute();
-	    
-		popularlist.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view,
-			int position, long id) {
-			TextView mysongtxt = (TextView) view.findViewById(R.id.popularsong);
-			TextView myartisttxt = (TextView) view.findViewById(R.id.popularartist);
-
-
-			String myartist = myartisttxt.getText().toString();
-			String mysong = mysongtxt.getText().toString();
-			
-			
-			
-			FragmentTransaction ft = getFragmentManager().beginTransaction();
-			YourRequest fragment = new YourRequest();
-			Bundle args = new Bundle();
-			args.putString("sendmysong", mysong);
-			args.putString("sendmyartist", myartist);
-
-			fragment.setArguments(args);
-			ft.replace(R.id.activity_main_content_fragment, fragment);
-			//ft.addToBackStack(null);
-			ft.commit(); 
-			((MainActivity) getActivity()).setCountText("Your Request");
-
-			((MainActivity) getActivity()).prgmNameList[1]="Your Request";
-
-
+		song_id=new ArrayList<String>();
+		// Tag used to cancel the request
+		String url = "http://anujkothari.com/hrckaraoke/androidservice/views/popular_requests";
+		final Context context = getActivity();
 		
+		SessionManager session = new SessionManager(context);
+		session.checkLogin();
+        
+        HashMap<String, String> user = session.getUserDetails();
+        
+        // name
+        final String sesid = user.get(SessionManager.KEY_SESSIONID);
+        final String sesname = user.get(SessionManager.KEY_SESSIONNAME);
+        final String token = user.get(SessionManager.KEY_CSRF);
+        uid= user.get(SessionManager.KEY_UID);
 
-			}
-			});
+        Log.e("HRC",sesid +"   " +sesname+"   " +token+"And uid is" +uid);
+        
+       
+        popularlist = (ListView) view.findViewById(R.id.popularlist);
 
+        
+        
+    	popularlist.setOnItemClickListener(new OnItemClickListener() {
+    		public void onItemClick(AdapterView<?> parent, View view,
+    		int position, long id) {
+    		/*TextView mysongtxt = (TextView) view.findViewById(R.id.popularsong);
+    		TextView myartisttxt = (TextView) view.findViewById(R.id.popularartist);
+
+
+    		String myartist = myartisttxt.getText().toString();
+    		String mysong = mysongtxt.getText().toString();*/
+
+/***************************************************
+  * Code for make request
+  */
+    			 final RequestQueue queue = Volley.newRequestQueue(context);
+    			 Log.e("HRC","clicked") ;
+	    		   String url = "http://anujkothari.com/hrckaraoke/androidservice/node";
+   	             
+	    		   final ProgressDialog pDialog = new ProgressDialog(context);
+	    		   pDialog.setMessage("Making Request...");
+	    		   pDialog.show();    
+	    		   
+	    		   
+	    		   
+	    		   String params2 = new String("&title=dasdasda&type=request&field_customer[und][0][uid]=[uid:\""+ uid.toString()+"\"]&field_song[und][0][nid]=[nid:\""+ song_id.get(position)+"\"]&field_event[und][0][nid]=[nid:3]&field_status[und]=Requested");
+	    		   
+	    		  JsonObjectRequest makeReq = new JsonObjectRequest(Method.POST, url, params2,
+	    		                 new Response.Listener<JSONObject>() {
+	    		  
+	    		                     @Override
+	    		                     public void onResponse(JSONObject response) {
+	    		                         Log.d("HRCmq", response.toString());
+	    		                         pDialog.hide();
+	    		                     }
+	    		                 }, new Response.ErrorListener() {
+	    		  
+	    		                     @Override
+	    		                     public void onErrorResponse(VolleyError error) {
+	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
+	    		                         pDialog.hide();
+	    		                     }
+	    		                 }) {
+   	    			 	 public Map<String, String> getHeaders() throws AuthFailureError {
+	    		                 HashMap<String, String> headers = new HashMap<String, String>();
+	    		                 headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+	    		 			     headers.put("Cookie", sesname+"="+sesid);
+	    		 			     headers.put("X-CSRF-Token", token);
+	    		                 return headers;
+	    		             }
+	    		  
+	    		         };
+	    		        queue.add(makeReq);
+/******************************************************************/
+	    		        
+    		android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+    		YourRequest fragment = new YourRequest();
+    		Bundle args = new Bundle();
+    		/*args.putString("sendmysong", mysong);
+    		args.putString("sendmyartist", myartist);
+
+    		fragment.setArguments(args);*/
+    		ft.replace(R.id.activity_main_content_fragment, fragment);
+    		//ft.addToBackStack(null);
+    		ft.commit();
+    		((MainActivity) getActivity()).setCountText("Your Request");
+
+    		((MainActivity) getActivity()).prgmNameList[1]="Your Request";
+
+
+
+
+    		}
+    		});
+
+
+        
+        final ProgressDialog pDialog = new ProgressDialog(context);
+		pDialog.setMessage("Fetching most requested songs...");
+		pDialog.show();    
+		         
+		JsonArrayRequest req = new JsonArrayRequest(Method.GET, url, 
+			null, new Response.Listener<JSONArray>() {
+                @Override
+				public void onResponse(JSONArray result) {
+					// TODO Auto-generated method stub
+                	//Log.e("HRC",response.toString());
+                	pDialog.hide();
+                	//get the ListView UI element
+        	        ListView lst = (ListView) getActivity().findViewById(R.id.popularlist);
+
+        	        //create the ArrayList to store the titles of nodes
+        	        ArrayList<String> popularsonglistItems=new ArrayList<String>();
+        	        ArrayList<String> popularartlistItems=new ArrayList<String>();
+        	        
+        	        System.out.println("popular list" +result.toString());
+
+        	        //iterate through JSON to read the title of nodes
+        	        for(int i=0;i<result.length();i++){
+        	            try {
+        	            	song_id.add(result.getJSONObject(i).getString("song").toString());
+        	                popularartlistItems.add(result.getJSONObject(i).getString("nid").toString());
+        	            	popularsonglistItems.add(result.getJSONObject(i).getString("node_title").toString());
+        	            } catch (Exception e) {
+        	                Log.v("Error adding article", e.getMessage());
+        	            }
+        	        }
+
+        	        //create array adapter and give it our list of nodes, pass context, layout and list of items
+        	    	PopularAdapter arrayAdapter1 = new PopularAdapter(getActivity(),popularsonglistItems,popularartlistItems);
+        	    	lst.setAdapter(arrayAdapter1);
+				}
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("HRC", "Error: " + error.toString());
+                    pDialog.hide();
+                }
+            }) {
+ 			public Map<String, String> getHeaders() throws AuthFailureError {
+ 				HashMap<String, String> headers = new HashMap<String, String>();
+			    headers.put("Content-Type", "application/json");
+			    headers.put("Cookie", sesname+"="+sesid);
+			    headers.put("X-CSRF-Token", token);
+			    return headers;
+ 			}
+		};
+		 
+		// Adding request to request queue
+		
+		RequestQueue queue = Volley.newRequestQueue(context);
+		queue.add(req);
+		
 		return view;
 	}
-	
-	private class FetchItems extends AsyncTask<String, Void, JSONArray> {
-
-	    protected JSONArray doInBackground(String... params) {
-
-	      
-
-	        HttpClient httpclient = new DefaultHttpClient();
-
-	        HttpGet httpget = new HttpGet("http://anujkothari.com/hrckaraoke/androidservice/views/popular_requests");
-	        //set header to tell REST endpoint the request and response content types
-	        httpget.setHeader("Accept", "application/json");
-	        httpget.setHeader("Content-type", "application/json");
-	        System.out.println("ninad");
-
-	        JSONArray json = new JSONArray();
-
-	        try {
-
-	            HttpResponse response = httpclient.execute(httpget);
-	            System.out.println("ninad1");
-
-	            //read the response and convert it into JSON array
-	            json = new JSONArray(EntityUtils.toString(response.getEntity()));
-	            
-	            System.out.println("ninad12");
-	            System.out.println("json "+json);           
-	            //return the JSON array for post processing to onPostExecute function
-	            return json;
-
-	            
-	            
-
-
-	        }catch (Exception e) {
-	            Log.v("Error adding article",e.getMessage());
-	        }
-
-
-
-	        return json;
-	    }
-
-
-	    //executed after the background nodes fetching process is complete
-	    protected void onPostExecute(JSONArray result) {
-
-	        //get the ListView UI element
-	        ListView lst = (ListView) getActivity().findViewById(R.id.popularlist);
-
-	        //create the ArrayList to store the titles of nodes
-	        ArrayList<String> popularsonglistItems=new ArrayList<String>();
-	        ArrayList<String> popularartlistItems=new ArrayList<String>();
-
-	        //iterate through JSON to read the title of nodes
-	        for(int i=0;i<result.length();i++){
-	            try {
-	            	
-	                popularartlistItems.add(result.getJSONObject(i).getString("nid").toString());
-	            	popularsonglistItems.add(result.getJSONObject(i).getString("node_title").toString());
-	            } catch (Exception e) {
-	                Log.v("Error adding article", e.getMessage());
-	            }
-	        }
-
-	        //create array adapter and give it our list of nodes, pass context, layout and list of items
-	    	PopularAdapter arrayAdapter1 = new PopularAdapter(getActivity(),popularsonglistItems,popularartlistItems);
-	    	lst.setAdapter(arrayAdapter1);
-	    }
-	}
-	
-	
-	
-	
 	
 	// adapter for list view
 	public class PopularAdapter extends BaseAdapter {
@@ -206,4 +257,5 @@ public class MostPopularTab extends Fragment {
 		}
 
 	}
+		
 }
