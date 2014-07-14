@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.android.volley.Request.Method;
 import com.android.volley.AuthFailureError;
@@ -28,6 +29,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,13 +44,13 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
     
  // Tag used to cancel the request
  		String url = "http://anujkothari.com/hrckaraoke/androidservice/views/previous_requests";
- 		Context context = getActivity();
+ 		final Context context = getActivity();
  		
  		SessionManager session = new SessionManager(context);
  		session.checkLogin();
          
         HashMap<String, String> user = session.getUserDetails();
-         
+        final RequestQueue queue = Volley.newRequestQueue(context);
         // name
         final String sesid = user.get(SessionManager.KEY_SESSIONID);
         final String sesname = user.get(SessionManager.KEY_SESSIONNAME);
@@ -59,7 +62,7 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
  		pDialog.show();    
  		         
  		JsonArrayRequest req = new JsonArrayRequest(Method.GET, url, 
- 			new Response.Listener<JSONArray>() {
+ 			null, new Response.Listener<JSONArray>() {
                  @Override
  				public void onResponse(JSONArray result) {
  					// TODO Auto-generated method stub
@@ -78,10 +81,55 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
          	            	
          	            	previousartlistItems.add(result.getJSONObject(i).getString("nid").toString());
          	            	previoussonglistItems.add(result.getJSONObject(i).getString("node_title").toString());
+         	            	
          	            } catch (Exception e) {
          	                Log.v("Error adding article", e.getMessage());
          	            }
          	        }
+         	        
+         	       lst.setOnItemClickListener(new OnItemClickListener() {
+         	    	   @Override
+         	    	   public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+         	    		   //String yourData = temparr.get(position);
+	         	    	   Log.e("HRC","clicked") ;
+         	    		   String url = "http://anujkothari.com/hrckaraoke/androidservice/node";
+	         	             
+         	    		   final ProgressDialog pDialog = new ProgressDialog(context);
+         	    		   pDialog.setMessage("Making Request...");
+         	    		   pDialog.show();    
+         	    		   
+         	    		   
+         	    		   
+         	    		   String params2 = new String("&title=dasdasda&type=request&field_customer[und][0][uid]=[uid:17]&field_song[und][0][nid]=[nid:8]&field_event[und][0][nid]=[nid:3]&field_status[und]=Requested");
+         	    		   
+         	    		  JsonObjectRequest makeReq = new JsonObjectRequest(Method.POST, url, params2,
+         	    		                 new Response.Listener<JSONObject>() {
+         	    		  
+         	    		                     @Override
+         	    		                     public void onResponse(JSONObject response) {
+         	    		                         Log.d("HRCmq", response.toString());
+         	    		                         pDialog.hide();
+         	    		                     }
+         	    		                 }, new Response.ErrorListener() {
+         	    		  
+         	    		                     @Override
+         	    		                     public void onErrorResponse(VolleyError error) {
+         	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
+         	    		                         pDialog.hide();
+         	    		                     }
+         	    		                 }) {
+	         	    			 	 public Map<String, String> getHeaders() throws AuthFailureError {
+         	    		                 HashMap<String, String> headers = new HashMap<String, String>();
+         	    		                 headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+         	    		 			     headers.put("Cookie", sesname+"="+sesid);
+         	    		 			     headers.put("X-CSRF-Token", token);
+         	    		                 return headers;
+         	    		             }
+         	    		  
+         	    		         };
+         	    		        queue.add(makeReq);
+         	    	   }
+         	    	});
 
          	        //create array adapter and give it our list of nodes, pass context, layout and list of items
          	        PreviousAdapter arrayAdapter1 = new PreviousAdapter(getActivity(),previoussonglistItems,previousartlistItems);
@@ -105,7 +153,7 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
  		 
  		// Adding request to request queue
  		
- 		RequestQueue queue = Volley.newRequestQueue(context);
+ 		
  		queue.add(req);
  		
  		return view;
