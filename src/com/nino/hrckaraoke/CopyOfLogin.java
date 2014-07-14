@@ -2,8 +2,6 @@ package com.nino.hrckaraoke;
 
 
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -17,19 +15,9 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -42,7 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class Login extends Activity {
+public class CopyOfLogin extends Activity {
 
 	TextView forgotpass,notregistered;
 	Button btn_login;
@@ -78,7 +66,7 @@ public class Login extends Activity {
 			@SuppressLint("NewApi")
 			public void onClick(View v) {
 				
-				  Intent intent = new Intent(Login.this, Register.class);
+				  Intent intent = new Intent(CopyOfLogin.this, Register.class);
 		        
 				  startActivity(intent);
 		          finish();
@@ -131,7 +119,7 @@ public class Login extends Activity {
                 session_name=jsonObject.getString("session_name");
                 session_id=jsonObject.getString("sessid");
                 
-                //session.createLoginSession( session_name,session_id,csrf);
+                session.createLoginSession( session_name,session_id,csrf);
 
             }catch (Exception e) {
                 Log.v("HRCAPP", e.getMessage());
@@ -145,59 +133,21 @@ public class Login extends Activity {
         	
         	if(result!=null)
         	{
-	            
-        		String url = "http://anujkothari.com/hrckaraoke/services/session/token";
-        		ProgressDialog pDialog = new ProgressDialog(getApplicationContext());
-        		pDialog.setMessage("Loading...");
-        		//pDialog.show();    
-        		         
-        		StringRequest req = new StringRequest(url,
-        						new Response.Listener<String>() {
-        		                    @Override
-        							public void onResponse(String response) {
-        								// TODO Auto-generated method stub
-        		                    	csrf = response.toString();
-        		                    	Log.e("HRC",csrf);
-        		                    	//create an intent to start the ListActivity
-        		        	            Intent intent = new Intent(Login.this, MainActivity.class);
-        		        	            //pass the session_id and session_name to ListActivity
-        		        	            intent.putExtra("SESSION_ID", session_id);
-        		        	            intent.putExtra("SESSION_NAME", session_name);
-        		        	            intent.putExtra("CSRF_TOKEN", csrf);
-        		        	            session.createLoginSession( session_name,session_id,csrf);
-        		        	            //start the ListActivity
-        		        	            startActivity(intent);
-        		        	            finish();
-        							}
-        		                }, new Response.ErrorListener() {
-        		                    @Override
-        		                    public void onErrorResponse(VolleyError error) {
-        		                        Log.d("HRC", "Error: " + error.getMessage());
-        		                        //pDialog.hide();
-        		                    }
-        		                }) {
-        			 
-                    /**
-                     * Passing some request headers
-                     * */
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        HashMap<String, String> headers = new HashMap<String, String>();
-                        headers.put("Content-Type", "application/json");
-                        headers.put("Cookie", session_name+"="+session_id);
-                        return headers;
-                    }
-        		};
-        		
-        		// Adding request to request queue
-        		
-        		RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        		queue.add(req);
-        		
+            //create an intent to start the ListActivity
+            Intent intent = new Intent(CopyOfLogin.this, MainActivity.class);
+            //pass the session_id and session_name to ListActivity
+            intent.putExtra("SESSION_ID", session_id);
+            intent.putExtra("SESSION_NAME", session_name);
+            intent.putExtra("CSRF_TOKEN", csrf);
+           
+            //start the ListActivity
+            startActivity(intent);
+            finish();
             }
         	
         	else
         	{
-        		AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+        		AlertDialog.Builder builder = new AlertDialog.Builder(CopyOfLogin.this);
         	    //  builder.setIcon(R.drawable.ic_launcher);
         			
     	        builder.setTitle("Authetication failed");
@@ -207,7 +157,7 @@ public class Login extends Activity {
     	        .setCancelable(false)
     	        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
     	        public void onClick(DialogInterface dialog, int id) {
-    	        	 Intent intent = new Intent(Login.this, Login.class);
+    	        	 Intent intent = new Intent(CopyOfLogin.this, CopyOfLogin.class);
                      //pass the session_id and session_name to ListActivity
                     
                      //start the ListActivity
