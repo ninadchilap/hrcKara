@@ -60,7 +60,7 @@ public class MostPopularTab extends Fragment {
 		pDialog.show();    
 		         
 		JsonArrayRequest req = new JsonArrayRequest(Method.GET, url, 
-			new Response.Listener<JSONArray>() {
+			null, new Response.Listener<JSONArray>() {
                 @Override
 				public void onResponse(JSONArray result) {
 					// TODO Auto-generated method stub
