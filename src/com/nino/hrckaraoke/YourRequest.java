@@ -1,40 +1,28 @@
 package com.nino.hrckaraoke;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
-
-//import com.nino.hrckaraoke.MostPopularTab.PopularAdapter;
-
-
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.Request.Method;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-import com.nino.hrckaraoke.MostPopularTab.PopularAdapter;
+import org.json.JSONException;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request.Method;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 
 public class YourRequest extends Fragment {
 	
@@ -69,16 +57,25 @@ public class YourRequest extends Fragment {
 	                @Override
 					public void onResponse(JSONArray result) {
 						// TODO Auto-generated method stub
-	                	Log.e("HRC",result.toString());
+	                	System.out.println("HRC "+ result.toString());
 	                	pDialog.hide();
+	                	
+	                	
+	                			
 	                	String recmysong = "123";
 	        			String recmyartist = "123";
 	        			   
 	        			TextView mysong=(TextView)view.findViewById(R.id.mysong);
 	        			TextView myartist=(TextView)view.findViewById(R.id.myartist);
 	        			   
-	        			mysong.setText(recmysong);
-	        			myartist.setText(recmyartist);
+	        			try {
+							mysong.setText(result.getJSONObject(0).getString("nid").toString());
+							myartist.setText(result.getJSONObject(0).getString("node_field_data_field_song_nid").toString());
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+	        		
 	        	        
 					}
 	            }, new Response.ErrorListener() {

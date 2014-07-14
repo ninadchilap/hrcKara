@@ -3,22 +3,12 @@ package com.nino.hrckaraoke;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
-
-import com.android.volley.Request.Method;
-import com.android.volley.AuthFailureError;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -26,23 +16,37 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request.Method;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
 public class MostPopularTab extends Fragment {
 
 
 	ListView popularlist;
+	String uid=null;
+	ArrayList<String> song_id;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.mostpopulartab, null);
 		
+		song_id=new ArrayList<String>();
 		// Tag used to cancel the request
 		String url = "http://anujkothari.com/hrckaraoke/androidservice/views/popular_requests";
-		Context context = getActivity();
+		final Context context = getActivity();
 		
 		SessionManager session = new SessionManager(context);
 		session.checkLogin();
@@ -53,7 +57,89 @@ public class MostPopularTab extends Fragment {
         final String sesid = user.get(SessionManager.KEY_SESSIONID);
         final String sesname = user.get(SessionManager.KEY_SESSIONNAME);
         final String token = user.get(SessionManager.KEY_CSRF);
-        Log.e("HRC",sesid +"   " +sesname+"   " +token);
+        uid= user.get(SessionManager.KEY_UID);
+
+        Log.e("HRC",sesid +"   " +sesname+"   " +token+"And uid is" +uid);
+        
+       
+        popularlist = (ListView) view.findViewById(R.id.popularlist);
+
+        
+        
+    	popularlist.setOnItemClickListener(new OnItemClickListener() {
+    		public void onItemClick(AdapterView<?> parent, View view,
+    		int position, long id) {
+    		/*TextView mysongtxt = (TextView) view.findViewById(R.id.popularsong);
+    		TextView myartisttxt = (TextView) view.findViewById(R.id.popularartist);
+
+
+    		String myartist = myartisttxt.getText().toString();
+    		String mysong = mysongtxt.getText().toString();*/
+
+/***************************************************
+  * Code for make request
+  */
+    			 final RequestQueue queue = Volley.newRequestQueue(context);
+    			 Log.e("HRC","clicked") ;
+	    		   String url = "http://anujkothari.com/hrckaraoke/androidservice/node";
+   	             
+	    		   final ProgressDialog pDialog = new ProgressDialog(context);
+	    		   pDialog.setMessage("Making Request...");
+	    		   pDialog.show();    
+	    		   
+	    		   
+	    		   
+	    		   String params2 = new String("&title=dasdasda&type=request&field_customer[und][0][uid]=[uid:\""+ uid.toString()+"\"]&field_song[und][0][nid]=[nid:\""+ song_id.get(position)+"\"]&field_event[und][0][nid]=[nid:3]&field_status[und]=Requested");
+	    		   
+	    		  JsonObjectRequest makeReq = new JsonObjectRequest(Method.POST, url, params2,
+	    		                 new Response.Listener<JSONObject>() {
+	    		  
+	    		                     @Override
+	    		                     public void onResponse(JSONObject response) {
+	    		                         Log.d("HRCmq", response.toString());
+	    		                         pDialog.hide();
+	    		                     }
+	    		                 }, new Response.ErrorListener() {
+	    		  
+	    		                     @Override
+	    		                     public void onErrorResponse(VolleyError error) {
+	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
+	    		                         pDialog.hide();
+	    		                     }
+	    		                 }) {
+   	    			 	 public Map<String, String> getHeaders() throws AuthFailureError {
+	    		                 HashMap<String, String> headers = new HashMap<String, String>();
+	    		                 headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+	    		 			     headers.put("Cookie", sesname+"="+sesid);
+	    		 			     headers.put("X-CSRF-Token", token);
+	    		                 return headers;
+	    		             }
+	    		  
+	    		         };
+	    		        queue.add(makeReq);
+/******************************************************************/
+	    		        
+    		android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+    		YourRequest fragment = new YourRequest();
+    		Bundle args = new Bundle();
+    		/*args.putString("sendmysong", mysong);
+    		args.putString("sendmyartist", myartist);
+
+    		fragment.setArguments(args);*/
+    		ft.replace(R.id.activity_main_content_fragment, fragment);
+    		//ft.addToBackStack(null);
+    		ft.commit();
+    		((MainActivity) getActivity()).setCountText("Your Request");
+
+    		((MainActivity) getActivity()).prgmNameList[1]="Your Request";
+
+
+
+
+    		}
+    		});
+
+
         
         final ProgressDialog pDialog = new ProgressDialog(context);
 		pDialog.setMessage("Fetching most requested songs...");
@@ -72,11 +158,13 @@ public class MostPopularTab extends Fragment {
         	        //create the ArrayList to store the titles of nodes
         	        ArrayList<String> popularsonglistItems=new ArrayList<String>();
         	        ArrayList<String> popularartlistItems=new ArrayList<String>();
+        	        
+        	        System.out.println("popular list" +result.toString());
 
         	        //iterate through JSON to read the title of nodes
         	        for(int i=0;i<result.length();i++){
         	            try {
-        	            	
+        	            	song_id.add(result.getJSONObject(i).getString("song").toString());
         	                popularartlistItems.add(result.getJSONObject(i).getString("nid").toString());
         	            	popularsonglistItems.add(result.getJSONObject(i).getString("node_title").toString());
         	            } catch (Exception e) {

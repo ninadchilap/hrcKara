@@ -38,6 +38,8 @@ public class CopyOfLogin extends Activity {
     public String session_name;
     public String session_id;
     public String csrf;
+    public String uid;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -118,8 +120,11 @@ public class CopyOfLogin extends Activity {
                 //System.out.println("Hrcc "+jsonObject.toString());
                 session_name=jsonObject.getString("session_name");
                 session_id=jsonObject.getString("sessid");
+                JSONObject json_user= jsonObject.getJSONObject("user");
+                uid=json_user.getString("uid");
+
                 
-                session.createLoginSession( session_name,session_id,csrf);
+                session.createLoginSession( session_name,session_id,csrf,uid);
 
             }catch (Exception e) {
                 Log.v("HRCAPP", e.getMessage());

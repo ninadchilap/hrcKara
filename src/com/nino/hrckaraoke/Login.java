@@ -50,6 +50,7 @@ public class Login extends Activity {
     public String session_name;
     public String session_id;
     public String csrf;
+    public String uid;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +132,14 @@ public class Login extends Activity {
                 session_name=jsonObject.getString("session_name");
                 session_id=jsonObject.getString("sessid");
                 
+                
+                JSONObject json_user= jsonObject.getJSONObject("user");
+             // get CONTENTS JSONArray from json_live
+             
+                 uid=json_user.getString("uid");
+                
+                System.out.println("USer Id is "+ uid);
+                
                 //session.createLoginSession( session_name,session_id,csrf);
 
             }catch (Exception e) {
@@ -164,7 +173,7 @@ public class Login extends Activity {
         		        	            intent.putExtra("SESSION_ID", session_id);
         		        	            intent.putExtra("SESSION_NAME", session_name);
         		        	            intent.putExtra("CSRF_TOKEN", csrf);
-        		        	            session.createLoginSession( session_name,session_id,csrf);
+        		        	            session.createLoginSession( session_name,session_id,csrf,uid);
         		        	            //start the ListActivity
         		        	            startActivity(intent);
         		        	            finish();
