@@ -1,5 +1,7 @@
 package com.nino.hrckaraoke;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +20,15 @@ import com.android.volley.toolbox.Volley;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,11 +45,28 @@ public class MostPopularTab extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+		Context context = getActivity();
+
+		try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(
+                    "com.facebook.samples.hellofacebook", 
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                }
+        } catch (NameNotFoundException e) {
+        	Log.d("KeyHash:", "name not found");
+
+        } catch (NoSuchAlgorithmException e) {
+        	Log.d("KeyHash:", "no such algo");
+        }
 		View view = inflater.inflate(R.layout.mostpopulartab, null);
 		
 		// Tag used to cancel the request
 		String url = "http://anujkothari.com/hrckaraoke/androidservice/views/popular_requests";
-		Context context = getActivity();
 		
 		SessionManager session = new SessionManager(context);
 		session.checkLogin();
