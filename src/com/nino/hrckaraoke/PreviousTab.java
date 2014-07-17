@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.android.volley.Request.Method;
@@ -55,10 +56,13 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
         final String sesid = user.get(SessionManager.KEY_SESSIONID);
         final String sesname = user.get(SessionManager.KEY_SESSIONNAME);
         final String token = user.get(SessionManager.KEY_CSRF);
-        Log.e("HRC",sesid +"   " +sesname+"   " +token);
+        final String event = "3";
+        final String userdata = user.get(SessionManager.KEY_USER);
+        
+        Log.e("HRCPrevTab",sesid +"   " +sesname+"   " +token +"   " +event+"   " +userdata);
          
         final ProgressDialog pDialog = new ProgressDialog(context);
- 		pDialog.setMessage("Fetching most requested songs...");
+ 		pDialog.setMessage("Fetching your previous requests...");
  		pDialog.show();    
  		         
  		JsonArrayRequest req = new JsonArrayRequest(Method.GET, url, 
@@ -90,44 +94,52 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
          	       lst.setOnItemClickListener(new OnItemClickListener() {
          	    	   @Override
          	    	   public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-         	    		   //String yourData = temparr.get(position);
-	         	    	   Log.e("HRC","clicked") ;
+         	    		   String data=(String)parent.getItemAtPosition(position);
+         	    		  
+         	    		   Log.e("HRC list item",data.toString());
          	    		   String url = "http://anujkothari.com/hrckaraoke/androidservice/node";
 	         	             
          	    		   final ProgressDialog pDialog = new ProgressDialog(context);
          	    		   pDialog.setMessage("Making Request...");
          	    		   pDialog.show();    
          	    		   
+         	    		   String userid = null;
+							try {
+								JSONObject userdatajson = new JSONObject(userdata);
+								userid = userdatajson.getString("uid");
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
          	    		   
+         	    		   String params2 = new String("&title=dasdasda&type=request&field_customer[und][0][uid]=[uid:"+userid+"]&field_song[und][0][nid]=[nid:8]&field_event[und][0][nid]=[nid:"+event+"]&field_status[und]=Requested");
          	    		   
-         	    		   String params2 = new String("&title=dasdasda&type=request&field_customer[und][0][uid]=[uid:17]&field_song[und][0][nid]=[nid:8]&field_event[und][0][nid]=[nid:3]&field_status[und]=Requested");
-         	    		   
-         	    		  JsonObjectRequest makeReq = new JsonObjectRequest(Method.POST, url, params2,
-         	    		                 new Response.Listener<JSONObject>() {
-         	    		  
-         	    		                     @Override
-         	    		                     public void onResponse(JSONObject response) {
-         	    		                         Log.d("HRCmq", response.toString());
-         	    		                         pDialog.hide();
-         	    		                     }
-         	    		                 }, new Response.ErrorListener() {
-         	    		  
-         	    		                     @Override
-         	    		                     public void onErrorResponse(VolleyError error) {
-         	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
-         	    		                         pDialog.hide();
-         	    		                     }
-         	    		                 }) {
-	         	    			 	 public Map<String, String> getHeaders() throws AuthFailureError {
-         	    		                 HashMap<String, String> headers = new HashMap<String, String>();
-         	    		                 headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-         	    		 			     headers.put("Cookie", sesname+"="+sesid);
-         	    		 			     headers.put("X-CSRF-Token", token);
-         	    		                 return headers;
-         	    		             }
-         	    		  
-         	    		         };
-         	    		        queue.add(makeReq);
+         	    		   JsonObjectRequest makeReq = new JsonObjectRequest(Method.POST, url, params2,
+	    		                 new Response.Listener<JSONObject>() {
+	    		  
+	    		                     @Override
+	    		                     public void onResponse(JSONObject response) {
+	    		                         Log.d("HRCmq", response.toString());
+	    		                         pDialog.hide();
+	    		                     }
+	    		                 }, new Response.ErrorListener() {
+	    		  
+	    		                     @Override
+	    		                     public void onErrorResponse(VolleyError error) {
+	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
+	    		                         pDialog.hide();
+	    		                     }
+	    		                 }) {
+	 	    			 	 public Map<String, String> getHeaders() throws AuthFailureError {
+	    		                 HashMap<String, String> headers = new HashMap<String, String>();
+	    		                 headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+	    		 			     headers.put("Cookie", sesname+"="+sesid);
+	    		 			     headers.put("X-CSRF-Token", token);
+	    		                 return headers;
+	    		             }
+	    		  
+	    		         };
+	    		         queue.add(makeReq);
          	    	   }
          	    	});
 

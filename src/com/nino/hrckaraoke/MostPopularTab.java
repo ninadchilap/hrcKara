@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.android.volley.Request.Method;
 import com.android.volley.AuthFailureError;
@@ -28,14 +30,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class MostPopularTab extends Fragment {
 
@@ -46,23 +52,8 @@ public class MostPopularTab extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
-		Context context = getActivity();
+		final Context context = getActivity();
 
-		try {
-            PackageInfo info = context.getPackageManager().getPackageInfo(
-                    "com.facebook.samples.hellofacebook", 
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-                }
-        } catch (NameNotFoundException e) {
-        	Log.d("KeyHash:", "name not found");
-
-        } catch (NoSuchAlgorithmException e) {
-        	Log.d("KeyHash:", "no such algo");
-        }
 		View view = inflater.inflate(R.layout.mostpopulartab, null);
 		
 		// Tag used to cancel the request
@@ -77,7 +68,10 @@ public class MostPopularTab extends Fragment {
         final String sesid = user.get(SessionManager.KEY_SESSIONID);
         final String sesname = user.get(SessionManager.KEY_SESSIONNAME);
         final String token = user.get(SessionManager.KEY_CSRF);
-        Log.e("HRC",sesid +"   " +sesname+"   " +token);
+        final String event = "3";
+        final String userdata = user.get(SessionManager.KEY_USER);
+        
+        Log.e("HRCMostPopTab",sesid +"   " +sesname+"   " +token +"   " +event+"   " +userdata);
         
         final ProgressDialog pDialog = new ProgressDialog(context);
 		pDialog.setMessage("Fetching most requested songs...");
@@ -107,6 +101,62 @@ public class MostPopularTab extends Fragment {
         	                Log.v("Error adding article", e.getMessage());
         	            }
         	        }
+        	        
+        	        lst.setOnItemClickListener(new OnItemClickListener() {
+          	    	   @Override
+          	    	   public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+          	    		   //Object item = parent.getItemAtPosition(position);
+          	    		  
+          	    		   //Log.e("HRC list item",parent.toString());
+          	    		   //Log.e("HRC list item",view.toString());
+          	    		   
+          	    		//Log.e("HRC list item",view.toString());
+          	    		
+          	    		   String url = "http://anujkothari.com/hrckaraoke/androidservice/node";
+ 	         	             
+          	    		   final ProgressDialog pDialog = new ProgressDialog(context);
+          	    		   pDialog.setMessage("Making Request...");
+          	    		   pDialog.show();    
+          	    		   
+          	    		   String userid = null;
+							try {
+								JSONObject userdatajson = new JSONObject(userdata);
+								userid = userdatajson.getString("uid");
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+          	    		   
+          	    		   String params2 = new String("&title=dasdasda&type=request&field_customer[und][0][uid]=[uid:"+userid+"]&field_song[und][0][nid]=[nid:8]&field_event[und][0][nid]=[nid:"+event+"]&field_status[und]=Requested");
+       	    		   
+          	    		   JsonObjectRequest makeReq = new JsonObjectRequest(Method.POST, url, params2,
+          	    		                 new Response.Listener<JSONObject>() {
+          	    		  
+          	    		                     @Override
+          	    		                     public void onResponse(JSONObject response) {
+          	    		                        Log.d("HRCmq", response.toString());
+          	    		                      pDialog.hide();
+          	    		                     }
+          	    		                 }, new Response.ErrorListener() {
+          	    		  
+          	    		                     @Override
+          	    		                     public void onErrorResponse(VolleyError error) {
+          	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
+          	    		                         pDialog.hide();
+          	    		                     }
+          	    		                 }) {
+ 	         	    			 	 public Map<String, String> getHeaders() throws AuthFailureError {
+          	    		                 HashMap<String, String> headers = new HashMap<String, String>();
+          	    		                 headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+          	    		 			     headers.put("Cookie", sesname+"="+sesid);
+          	    		 			     headers.put("X-CSRF-Token", token);
+          	    		                 return headers;
+          	    		             }
+          	    		  
+          	    		         };
+          	    		        //queue.add(makeReq);
+          	    	   }
+          	    	});
 
         	        //create array adapter and give it our list of nodes, pass context, layout and list of items
         	    	PopularAdapter arrayAdapter1 = new PopularAdapter(getActivity(),popularsonglistItems,popularartlistItems);

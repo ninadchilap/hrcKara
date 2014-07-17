@@ -1,10 +1,16 @@
 package com.nino.hrckaraoke;
 import java.util.HashMap;
  
+
+
+
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
  
 public class SessionManager {
     // Shared Preferences
@@ -29,6 +35,10 @@ public class SessionManager {
     public static final String KEY_SESSIONNAME = "sessionname";
     
     public final static String KEY_SESSIONID = "sessionId";
+    
+    public final static String KEY_USER = "session_user";
+    
+    public final static String KEY_EVENT = "session_event";
      
     // Email address (make variable public to access from outside)
     public static final String KEY_CSRF = "csrf";
@@ -42,9 +52,15 @@ public class SessionManager {
      
     /**
      * Create login session
+     * @param session_event 
+     * @param session_user 
      * */
-    public void createLoginSession(String sessionname,String sessionId,String csrf){
+    public void createLoginSession(String sessionname,String sessionId,String csrf, JSONObject session_user, String session_event){
         // Storing login value as TRUE
+    	//Log.e("HRC Session name",sessionname);
+    	//Log.e("HRC Session id",sessionId);
+    	//Log.e("HRC Session csrf",csrf);
+    	
         editor.putBoolean(IS_LOGIN, true);
         
         editor.putString(KEY_SESSIONNAME, sessionname);
@@ -52,6 +68,10 @@ public class SessionManager {
         editor.putString(KEY_SESSIONID, sessionId);
         
         editor.putString(KEY_CSRF, csrf);
+        
+        editor.putString(KEY_USER, session_user.toString());
+
+        editor.putString(KEY_EVENT, session_event);
 
         editor.commit();
     }  
@@ -65,7 +85,7 @@ public class SessionManager {
         // Check login status
         if(!this.isLoggedIn()){
             // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, Login.class);
+            Intent i = new Intent(_context, Welcome.class);
             // Closing all the Activities
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
              
@@ -87,13 +107,14 @@ public class SessionManager {
         HashMap<String, String> user = new HashMap<String, String>();
         // user name
         user.put(KEY_SESSIONNAME, pref.getString(KEY_SESSIONNAME, null));
-         
-        // user email id
-        // user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
         
         user.put(KEY_SESSIONID, pref.getString(KEY_SESSIONID, null));
         
         user.put(KEY_CSRF, pref.getString(KEY_CSRF, null));
+        
+        user.put(KEY_EVENT, pref.getString(KEY_EVENT, null));
+        
+        user.put(KEY_USER, pref.getString(KEY_USER, null));
          
         // return user
         return user;

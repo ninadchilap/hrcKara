@@ -56,9 +56,11 @@ public class Welcome extends Activity {
 	private String TAG = "MainActivity";
 	
 	SessionManager session_main;
-    public String session_name = null;
-    public String session_id = null;
-    public String csrf = null;
+    String session_name = null;
+    String session_id = null;
+    JSONObject session_user = null;
+    String csrf = null;
+    String session_event = null;
 	 
 	private enum PendingAction {
         NONE,
@@ -70,8 +72,30 @@ public class Welcome extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		final RequestQueue queue = Volley.newRequestQueue(this);
-		session_main = new SessionManager(getApplicationContext()); 
+		session_main = new SessionManager(Welcome.this);
+	    //session_main.checkLogin();
+        
+        HashMap<String, String> user = session_main.getUserDetails();
+        if (user.get(SessionManager.KEY_SESSIONID)=="sessionId" || user.get(SessionManager.KEY_SESSIONNAME)=="sessionname" || user.get(SessionManager.KEY_CSRF)=="csrf" || user.get(SessionManager.KEY_USER)=="session_user" || user.get(SessionManager.KEY_SESSIONID)==null || user.get(SessionManager.KEY_SESSIONNAME)==null || user.get(SessionManager.KEY_CSRF)==null || user.get(SessionManager.KEY_USER)==null)
+        {
+        	//continue with normal stull
+        	
+        }
+        else
+        {
+        	Intent intent = new Intent(Welcome.this, MainActivity.class);
+        	startActivity(intent);
+            finish();
+        }
+        
+       /* try{
+        	Log.e("msg", user.get(SessionManager.KEY_SESSIONID));
+        }catch(Exception e)
+        {
+        	Log.e("HRCwelcome", "caught exception");
+        }*/
+        
+        final RequestQueue queue = Volley.newRequestQueue(this);
 		
 		PackageInfo info;
 		/*try {
@@ -110,7 +134,7 @@ public class Welcome extends Activity {
 		LoginButton authButton = (LoginButton) findViewById(R.id.authButton);
 		authButton.setBackgroundResource(R.drawable.fbicon);
 		authButton.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-		  authButton.setOnErrorListener(new OnErrorListener() {
+		authButton.setOnErrorListener(new OnErrorListener() {
 		   
 		   @Override
 		   public void onError(FacebookException error) {
@@ -135,8 +159,8 @@ public class Welcome extends Activity {
 		                          @Override
 		                          public void onCompleted(GraphUser user,Response response) {
 		                              if (user != null) { 
-			                              Log.i(TAG,"User ID "+ user.getId());
-			                              Log.i(TAG,"Email "+ user.asMap().get("email"));
+			                              //Log.i(TAG,"User ID "+ user.getId());
+			                              //Log.i(TAG,"Email "+ user.asMap().get("email"));
 			                              //lblEmail.setText(user.asMap().get("email").toString());
 			                              final String fbid = user.getId();
 			                              final String emailid = (String) user.asMap().get("email");
@@ -147,49 +171,186 @@ public class Welcome extends Activity {
 			                              
 			                              String url = "http://anujkothari.com/hrckaraoke/androidservice/views/user_exists_check?facebook_id="+fbid;
 			 	         	             
-			            	    		   //final ProgressDialog pDialog = new ProgressDialog(getApplicationContext());
-			            	    		   //pDialog.setMessage("Checking account...");
-			            	    		   //pDialog.show();    
+			            	    		   final ProgressDialog pDialog = new ProgressDialog(Welcome.this);
+			            	    		   pDialog.setMessage("Logging into account...");
+			            	    		   pDialog.show(); 
 			            	    		   
 			            	    		  JsonArrayRequest makeReq = new JsonArrayRequest(Method.GET, url, null,
-			            	    		                 new Listener<JSONArray>() {
-			            	    		  
-			            	    		                     @Override
-			            	    		                     public void onResponse(JSONArray response) {
-			            	    		                         //Log.d("HRCmq", response.toString());
-			            	    		                         //pDialog.hide();
-			            	    		                    	 if(response.length()!=0)
-			            	    		                    	 {
-			            	    		                    		 Log.d("HRC","existing user");
-			            	    		                    		 //USER ALREADY EXISTS IN SYSTEM. LOG IN THE USER AND SET SESSION VALUES.
+            	    		                 new Listener<JSONArray>() {
+            	    		  
+            	    		                     @Override
+            	    		                     public void onResponse(JSONArray response) {
+            	    		                         //Log.d("HRCmq", response.toString());
+            	    		                         //pDialog.hide();
+            	    		                    	 if(response.length()!=0)
+            	    		                    	 {
+            	    		                    		 Log.d("HRC","existing user");
+            	    		                    		 //USER ALREADY EXISTS IN SYSTEM. LOG IN THE USER AND SET SESSION VALUES.
+            	    		                    		 
+            	    		                    		 String url2 = "http://anujkothari.com/hrckaraoke/androidservice/user/login";
+            				 	         	             
+            				            	    		 String params2 = new String("&username=fb_"+fbid+"&password=all&");
+            	    		                    		 
+            	    		                    		 JsonObjectRequest makeReq = new JsonObjectRequest(Method.POST, url2, params2,
+    				            	    		                 new Listener<JSONObject>() {
+    				            	    		  
+    				            	    		                     @Override
+    				            	    		                     public void onResponse(JSONObject response) {
+    				            	    		                    	 //Log.d("HRCmq", response.toString());
+    				            	    		                         //pDialog.hide();
+    				            	    		                         try {
+    				            	    		                        	session_name = response.getString("session_name");
+																			session_id=response.getString("sessid");
+																			session_user= new JSONObject(response.getString("user"));
+																			
+																			String url4 = "http://anujkothari.com/hrckaraoke/services/session/token";
+								            	            		         
+										            	            		StringRequest req4 = new StringRequest(url4,
+								        	            						new Listener<String>() {
+								        	            		                    @Override
+								        	            							public void onResponse(String response) {
+								        	            								// TODO Auto-generated method stub
+								        	            		                    	csrf = response.toString();
+								        	            		                    	pDialog.hide();
+								        	            		                    	session_main.createLoginSession( session_name,session_id,csrf, session_user, session_event);
+								        	            		        	            //start the ListActivity
+								        	            		                    	Intent intent = new Intent(Welcome.this, MainActivity.class);
+								        	            		                    	startActivity(intent);
+								        	            		        	            finish();
+								        	            							}
+								        	            		                }, new ErrorListener() {
+								        	            		                    @Override
+								        	            		                    public void onErrorResponse(VolleyError error) {
+								        	            		                        Log.d("HRC", "Error: " + error.getMessage());
+								        	            		                        //pDialog.hide();
+								        	            		                    }
+								        	            		                }) {
+										            	            			 
+										            	                        /**
+										            	                         * Passing some request headers
+										            	                         * */
+										            	                        public Map<String, String> getHeaders() throws AuthFailureError {
+										            	                            HashMap<String, String> headers = new HashMap<String, String>();
+										            	                            headers.put("Content-Type", "application/json");
+										            	                            headers.put("Cookie", session_name+"="+session_id);
+										            	                            return headers;
+										            	                        }
+										            	            		};
+										            	            		
+										            	            		// Adding request to request queue
+										            	            		queue.add(req4);
+																			
+																			
+																		} catch (JSONException e) {
+																			// TODO Auto-generated catch block
+																			Log.e("HRC","json exception");
+																			e.printStackTrace();
+																		}
+    				            	    		                     }
+    				            	    		                 }, new ErrorListener() {
+    				            	    		  
+    				            	    		                     @Override
+    				            	    		                     public void onErrorResponse(VolleyError error) {
+    				            	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
+    				            	    		                         //pDialog.hide();
+    				            	    		                     }
+    				            	    		                 }) {
+            				   	         	    			 	 public Map<String, String> getHeaders() throws AuthFailureError {
+            				            	    		                 HashMap<String, String> headers = new HashMap<String, String>();
+            				            	    		                 headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+            				            	    		 			     return headers;
+            				            	    		             }
+            				            	    		  
+            				            	    		  };
+            				            	    		  queue.add(makeReq);
+            	    		                    		 
+            	    		                    	 }
+            	    		                    	 else
+            	    		                    	 {
+            	    		                    		 Log.d("HRC","new user");
+            	    		                    		 //USER DOEST NOT EXIST IN SYSTEM. REGISTER THE USER AND SET THE SESSION PARAMENTERS.
+            	    		                    		 
+            	    		                    		 String url3 = "http://anujkothari.com/hrckaraoke/androidservice/user";
+            				 	         	             
+            	    		                    		 String password = new String(Long.toHexString(Double.doubleToLongBits(Math.random())));
+            	    		                    		 String params3 = new String("&name=fb_"+fbid+"&pass="+password+"&field_name[und][0][value]="+name+"&mail="+emailid+"&field_facebook_id[und][0][value]="+fbid+"&field_facebook_data[und][0][value]="+alldata+"&roles[4]=4");
+            	    		                    		 
+            	    		                    		 JsonObjectRequest makeReq = new JsonObjectRequest(Method.POST, url3, params3,
+				            	    		                 new Listener<JSONObject>() {
+				            	    		  
+				            	    		                     @Override
+				            	    		                     public void onResponse(JSONObject response) {
+				            	    		                         //pDialog.hide();
+				            	    		                         
+				            	    		                       //USER HAS BEEN REGISTERED. LOG IN THE USER AND SET SESSION VALUES.
 			            	    		                    		 
 			            	    		                    		 String url2 = "http://anujkothari.com/hrckaraoke/androidservice/user/login";
 			            				 	         	             
 			            				            	    		 String params2 = new String("&username=fb_"+fbid+"&password=all&");
 			            	    		                    		 
 			            	    		                    		 JsonObjectRequest makeReq = new JsonObjectRequest(Method.POST, url2, params2,
-			            				            	    		                 new Listener<JSONObject>() {
-			            				            	    		  
-			            				            	    		                     @Override
-			            				            	    		                     public void onResponse(JSONObject response) {
-			            				            	    		                         Log.d("HRCmq", response.toString());
-			            				            	    		                         //pDialog.hide();
-			            				            	    		                         try {
-																								session_name=response.getString("session_name");
-																								session_id=response.getString("sessid");
-																							} catch (JSONException e) {
-																								// TODO Auto-generated catch block
-																								e.printStackTrace();
-																							}
-			            				            	    		                     }
-			            				            	    		                 }, new ErrorListener() {
-			            				            	    		  
-			            				            	    		                     @Override
-			            				            	    		                     public void onErrorResponse(VolleyError error) {
-			            				            	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
-			            				            	    		                         //pDialog.hide();
-			            				            	    		                     }
-			            				            	    		                 }) {
+	            				            	    		                 new Listener<JSONObject>() {
+	            				            	    		  
+	            				            	    		                     @Override
+	            				            	    		                     public void onResponse(JSONObject response) {
+	            				            	    		                         //Log.d("HRCmq", response.toString());
+	            				            	    		                         //pDialog.hide();
+	            				            	    		                         try {
+	            				            	    		                        	session_name = response.getString("session_name");
+	            				            	    		                        	session_id=response.getString("sessid");
+	            				            	    		                        	session_user= new JSONObject(response.getString("user"));
+	         																			
+	         																			String url4 = "http://anujkothari.com/hrckaraoke/services/session/token";
+	       								            	            		         
+	        										            	            		StringRequest req4 = new StringRequest(url4,
+	        								        	            						new Listener<String>() {
+	        								        	            		                    @Override
+	        								        	            							public void onResponse(String response) {
+	        								        	            								// TODO Auto-generated method stub
+	        								        	            		                    	csrf = response.toString();
+	        								        	            		                    	pDialog.hide();
+	        								        	            		                    	session_main.createLoginSession( session_name, session_id, csrf, session_user, session_event);
+	        								        	            		        	            //start the ListActivity
+	        								        	            		                    	Intent intent = new Intent(Welcome.this, MainActivity.class);
+	        								        	            		                    	startActivity(intent);
+	        								        	            		        	            finish();
+	        								        	            							}
+	        								        	            		                }, new ErrorListener() {
+	        								        	            		                    @Override
+	        								        	            		                    public void onErrorResponse(VolleyError error) {
+	        								        	            		                        Log.d("HRC", "Error: " + error.getMessage());
+	        								        	            		                        //pDialog.hide();
+	        								        	            		                    }
+	        								        	            		                }) {
+	        										            	            			 
+	        										            	                        /**
+	        										            	                         * Passing some request headers
+	        										            	                         * */
+	        										            	                        public Map<String, String> getHeaders() throws AuthFailureError {
+	        										            	                            HashMap<String, String> headers = new HashMap<String, String>();
+	        										            	                            headers.put("Content-Type", "application/json");
+	        										            	                            headers.put("Cookie", session_name+"="+session_id);
+	        										            	                            return headers;
+	        										            	                        }
+	        										            	            		};
+	        										            	            		
+	        										            	            		// Adding request to request queue
+	        										            	            		queue.add(req4);
+	         																			
+	         																			
+																					} catch (JSONException e) {
+																						// TODO Auto-generated catch block
+																						e.printStackTrace();
+																					}
+	            				            	    		                     }
+	            				            	    		                 }, new ErrorListener() {
+	            				            	    		  
+	            				            	    		                     @Override
+	            				            	    		                     public void onErrorResponse(VolleyError error) {
+	            				            	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
+	            				            	    		                         //pDialog.hide();
+	            				            	    		                     }
+	            				            	    		                 }) {
 			            				   	         	    			 	 public Map<String, String> getHeaders() throws AuthFailureError {
 			            				            	    		                 HashMap<String, String> headers = new HashMap<String, String>();
 			            				            	    		                 headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
@@ -198,107 +359,42 @@ public class Welcome extends Activity {
 			            				            	    		  
 			            				            	    		  };
 			            				            	    		  queue.add(makeReq);
-			            	    		                    		 
-			            	    		                    	 }
-			            	    		                    	 else
-			            	    		                    	 {
-			            	    		                    		 Log.d("HRC","new user");
-			            	    		                    		 //USER DOEST NOT EXIST IN SYSTEM. REGISTER THE USER AND SET THE SESSION PARAMENTERS.
-			            	    		                    		 
-			            	    		                    		 String url3 = "http://anujkothari.com/hrckaraoke/androidservice/user";
-			            				 	         	             
-			            	    		                    		 String password = new String(Long.toHexString(Double.doubleToLongBits(Math.random())));
-			            	    		                    		 String params3 = new String("&name=fb_"+fbid+"&pass="+password+"&field_name[und][0][value]="+name+"&mail="+emailid+"&field_facebook_id[und][0][value]="+fbid+"&field_facebook_data[und][0][value]="+alldata);
-			            	    		                    		 
-			            	    		                    		 JsonObjectRequest makeReq = new JsonObjectRequest(Method.POST, url3, params3,
-			            				            	    		                 new Listener<JSONObject>() {
-			            				            	    		  
-			            				            	    		                     @Override
-			            				            	    		                     public void onResponse(JSONObject response) {
-			            				            	    		                         Log.d("HRCmq", response.toString());
-			            				            	    		                         //pDialog.hide();
-			            				            	    		                         try {
-																									session_name=response.getString("session_name");
-																									session_id=response.getString("sessid");
-																								} catch (JSONException e) {
-																									// TODO Auto-generated catch block
-																									e.printStackTrace();
-																								}
-			            				            	    		                    	 
-			            				            	    		                     }
-			            				            	    		                 }, new ErrorListener() {
-			            				            	    		  
-			            				            	    		                     @Override
-			            				            	    		                     public void onErrorResponse(VolleyError error) {
-			            				            	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
-			            				            	    		                         //pDialog.hide();
-			            				            	    		                     }
-			            				            	    		                 }) {
-			            				   	         	    			 	 public Map<String, String> getHeaders() throws AuthFailureError {
-			            				            	    		                 HashMap<String, String> headers = new HashMap<String, String>();
-			            				            	    		                 headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-			            				            	    		 			     return headers;
-			            				            	    		             }
-			            				            	    		  
-			            				            	    		  };
-			            				            	    		  queue.add(makeReq);
-			            	    		                    	 }
-			            	    		                     }
-			            	    		                 }, new ErrorListener() {
-			            	    		  
-			            	    		                     @Override
-			            	    		                     public void onErrorResponse(VolleyError error) {
-			            	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
-			            	    		                         //pDialog.hide();
-			            	    		                     }
-			            	    		                 }) {
-			   	         	    			 	 public Map<String, String> getHeaders() throws AuthFailureError {
-			            	    		                 HashMap<String, String> headers = new HashMap<String, String>();
-			            	    		                 headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-			            	    		 			     return headers;
-			            	    		             }
-			            	    		  
-			            	    		         };
-			            	    		        queue.add(makeReq);
-
-			            	    		        String url4 = "http://anujkothari.com/hrckaraoke/services/session/token";
-			            	            		         
-			            	            		StringRequest req = new StringRequest(url4,
-            	            						new Listener<String>() {
-            	            		                    @Override
-            	            							public void onResponse(String response) {
-            	            								// TODO Auto-generated method stub
-            	            		                    	csrf = response.toString();
-            	            		                    	Log.e("HRC",csrf);
-            	            		                    	session_main.createLoginSession( session_name,session_id,csrf);
-            	            		        	            //start the ListActivity
-            	            		                    	Intent intent = new Intent(Welcome.this, MainActivity.class);
-            	            		                    	startActivity(intent);
-            	            		        	            finish();
-            	            							}
-            	            		                }, new ErrorListener() {
-            	            		                    @Override
-            	            		                    public void onErrorResponse(VolleyError error) {
-            	            		                        Log.d("HRC", "Error: " + error.getMessage());
-            	            		                        //pDialog.hide();
-            	            		                    }
-            	            		                }) {
-			            	            			 
-			            	                        /**
-			            	                         * Passing some request headers
-			            	                         * */
-			            	                        public Map<String, String> getHeaders() throws AuthFailureError {
-			            	                            HashMap<String, String> headers = new HashMap<String, String>();
-			            	                            headers.put("Content-Type", "application/json");
-			            	                            headers.put("Cookie", session_name+"="+session_id);
-			            	                            return headers;
-			            	                        }
-			            	            		};
-			            	            		
-			            	            		// Adding request to request queue
-			            	            		
-			            	            		queue.add(req);
-			            	    		        
+				            	    		                    	 
+				            	    		                     }
+				            	    		                 }, new ErrorListener() {
+				            	    		  
+				            	    		                     @Override
+				            	    		                     public void onErrorResponse(VolleyError error) {
+				            	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
+				            	    		                         //pDialog.hide();
+				            	    		                     }
+				            	    		                 }) {
+        				   	         	    			 	 public Map<String, String> getHeaders() throws AuthFailureError {
+    				            	    		                 HashMap<String, String> headers = new HashMap<String, String>();
+    				            	    		                 headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+    				            	    		 			     return headers;
+    				            	    		             }
+            				            	    		  
+            				            	    		  };
+            				            	    		  queue.add(makeReq);
+            	    		                    	 }
+            	    		                     }
+            	    		                 }, new ErrorListener() {
+            	    		  
+            	    		                     @Override
+            	    		                     public void onErrorResponse(VolleyError error) {
+            	    		                         Log.d("HRCmq", "Error: " + error.getMessage());
+            	    		                         //pDialog.hide();
+            	    		                     }
+            	    		                 }) {
+		   	         	    			 	 public Map<String, String> getHeaders() throws AuthFailureError {
+		            	    		                 HashMap<String, String> headers = new HashMap<String, String>();
+		            	    		                 headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+		            	    		 			     return headers;
+		            	    		             }
+		            	    		  
+		            	    		        };
+		            	    		        queue.add(makeReq);
 		                              }
 		                          }
 		                      });

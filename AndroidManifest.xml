@@ -4,7 +4,7 @@
     android:versionName="1.0" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="10"
         android:targetSdkVersion="16" />
 
     <application
@@ -12,7 +12,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-         >
+         android:hardwareAccelerated="true">
         <activity
             android:name="com.nino.hrckaraoke.Login"
             android:label="@string/app_name"
@@ -25,6 +25,11 @@
         <activity
             android:name="com.nino.hrckaraoke.Request"
             android:label="@string/title_activity_request"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.nino.hrckaraoke.Logout"
+            android:label="@string/title_activity_logout"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -71,6 +76,7 @@
 			android:theme="@android:style/Theme.Translucent.NoTitleBar"
 			android:label="@string/app_name" />
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id"/>
+        <activity android:name="com.nino.hrckaraoke.Logout" android:label="@string/app_name"></activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

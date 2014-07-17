@@ -164,7 +164,7 @@ public class Login extends Activity {
         		        	            intent.putExtra("SESSION_ID", session_id);
         		        	            intent.putExtra("SESSION_NAME", session_name);
         		        	            intent.putExtra("CSRF_TOKEN", csrf);
-        		        	            session.createLoginSession( session_name,session_id,csrf);
+        		        	            session.createLoginSession( session_name,session_id,csrf, null, null);
         		        	            //start the ListActivity
         		        	            startActivity(intent);
         		        	            finish();

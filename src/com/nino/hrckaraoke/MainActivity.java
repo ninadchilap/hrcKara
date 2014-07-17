@@ -35,7 +35,7 @@ public class MainActivity extends FragmentActivity {
 	public String session_id;
 	public String session_name;
 	
-	 String sesid,sesname;
+	String sesid,sesname;
 	ArrayList prgmName;
 	ImageButton search;
 	public static int[] prgmImages = { R.drawable.menuprofile, R.drawable.menurequest,
@@ -147,7 +147,7 @@ public class MainActivity extends FragmentActivity {
 			
 			search.setVisibility(View.GONE);
 
-			fragment = new YourRequest();
+			fragment = new Logout();
 		} 
 		
 		else if (selectedItem.compareTo("My Profile") == 0) {
@@ -166,8 +166,8 @@ public class MainActivity extends FragmentActivity {
 			fragment = new Others();
 		}
 		else if (selectedItem.compareTo("Logout") == 0) {
-            session.logoutUser();		}
-
+			fragment = new Logout();
+        }
 		if (fragment != null) {
 			ft.replace(R.id.activity_main_content_fragment, fragment);
 			ft.commit();
