@@ -37,7 +37,7 @@ public class MainActivity extends FragmentActivity {
 	
 	String sesid,sesname;
 	ArrayList prgmName;
-	ImageButton search;
+	//ImageButton search;
 	public static int[] prgmImages = { R.drawable.menuprofile, R.drawable.menurequest,
 			R.drawable.menuprevious, R.drawable.menukaraokeguide, R.drawable.menuexplore,R.drawable.ic_launcher
 			};
@@ -74,7 +74,7 @@ public class MainActivity extends FragmentActivity {
         
         
 		
-		search=(ImageButton)findViewById(R.id.search);
+		//search=(ImageButton)findViewById(R.id.search);
 		
 
 		//lvMenuItems = getResources().getStringArray(R.array.menu_items);
@@ -89,7 +89,7 @@ public class MainActivity extends FragmentActivity {
 
 		});
 		
-		search.setOnClickListener(new OnClickListener() {
+	/*	search.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -99,7 +99,7 @@ public class MainActivity extends FragmentActivity {
 		            startActivity(intent);
 				
 			}
-		});
+		});*/
 
 		btMenu = (ImageButton) findViewById(R.id.button_menu);
 		btMenu.setOnClickListener(new OnClickListener() {
@@ -139,30 +139,30 @@ public class MainActivity extends FragmentActivity {
 
 		if (selectedItem.compareTo("Make Request") == 0) {
 			
-			search.setVisibility(View.VISIBLE);
+			//search.setVisibility(View.VISIBLE);
 
 			fragment = new Request();
 		}
 		else if (selectedItem.compareTo("Your Request") == 0) {
 			
-			search.setVisibility(View.GONE);
+			//search.setVisibility(View.GONE);
 
 			fragment = new Logout();
 		} 
 		
 		else if (selectedItem.compareTo("My Profile") == 0) {
 			
-			search.setVisibility(View.GONE);
+			//search.setVisibility(View.GONE);
 			fragment = new Profile();
 		} else if (selectedItem.compareTo("Previous Request") == 0) {
 			
-			search.setVisibility(View.GONE);
+		//	search.setVisibility(View.GONE);
 			fragment = new Previous();
 		} else if (selectedItem.compareTo("HRC Karaoke Guide") == 0) {
-			search.setVisibility(View.GONE);
+		//	search.setVisibility(View.GONE);
 			fragment = new Guide();
 		} else if (selectedItem.compareTo("Explore Events") == 0) {
-			search.setVisibility(View.GONE);
+		//	search.setVisibility(View.GONE);
 			fragment = new Others();
 		}
 		else if (selectedItem.compareTo("Logout") == 0) {

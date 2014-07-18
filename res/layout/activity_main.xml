@@ -49,7 +49,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#AB1616"
+            android:background="#d9533e"
             android:orientation="horizontal" >
 
             <ImageButton
@@ -64,7 +64,12 @@
                 android:layout_width="1dp"
                 android:layout_height="fill_parent"
                 android:background="#ffffff" />
-
+ <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            /> 
+            
             <TextView
                 android:id="@+id/activity_main_content_title"
                 android:layout_width="wrap_content"
@@ -73,22 +78,13 @@
                 android:text="Make Request"
                 android:textColor="#ffffff"
                 android:textSize="22dp"
-                android:paddingLeft="20dp" />
+                />
             
               <View
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1"
-            /> 
-
-            <ImageButton
-                android:id="@+id/search"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/search"
-                 android:background="@drawable/states"
-              
-                 />
+            />
 
         </LinearLayout>
 
