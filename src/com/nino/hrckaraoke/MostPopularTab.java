@@ -48,6 +48,8 @@ public class MostPopularTab extends Fragment {
 	ListView popularlist;
 	
 	ArrayList<String> song_id;
+	ArrayList<String> popularsonglistItems;
+	ArrayList<String> popularartlistItems;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,8 +93,8 @@ public class MostPopularTab extends Fragment {
 								R.id.popularlist);
 
 						// create the ArrayList to store the titles of nodes
-						ArrayList<String> popularsonglistItems = new ArrayList<String>();
-						ArrayList<String> popularartlistItems = new ArrayList<String>();
+						popularsonglistItems = new ArrayList<String>();
+						popularartlistItems = new ArrayList<String>();
 
 						// iterate through JSON to read the title of nodes
 						for (int i = 0; i < result.length(); i++) {
@@ -143,7 +145,7 @@ public class MostPopularTab extends Fragment {
 								System.out.println("this is id  "+song_id.get(position));
 
 								String params2 = new String(
-										"&title=dasdasda&type=request&field_customer[und][0][uid]=[uid:"
+										"&title="+popularsonglistItems.get(position) +"&type=request&field_customer[und][0][uid]=[uid:"
 												+ userid
 												+ "]&field_song[und][0][nid]=[nid:"+ song_id.get(position)+"]&field_event[und][0][nid]=[nid:"
 												+ event
@@ -173,6 +175,8 @@ public class MostPopularTab extends Fragment {
 									    		((MainActivity) getActivity()).setCountText("Your Request");
 
 									    		((MainActivity) getActivity()).prgmNameList[1]="Your Request";
+									    		((MainActivity) getActivity()).search.setVisibility(View.GONE);
+
 											}
 										}, new Response.ErrorListener() {
 

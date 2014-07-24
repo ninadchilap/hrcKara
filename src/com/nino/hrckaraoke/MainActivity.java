@@ -151,7 +151,7 @@ public class MainActivity extends FragmentActivity {
 			
 			search.setVisibility(View.GONE);
 			tvTitle.setVisibility(View.VISIBLE);
-
+			fragment= new YourRequest();
 
 		} 
 		

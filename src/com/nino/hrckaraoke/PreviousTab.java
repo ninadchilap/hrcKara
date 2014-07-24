@@ -38,6 +38,11 @@ import android.widget.TextView;
 
 public class PreviousTab extends Fragment {
 	
+	ArrayList<String> song_id;
+	ArrayList<String> previoussonglistItems;
+     ArrayList<String> previousartlistItems;
+
+	
 @Override
 public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState) {
@@ -49,6 +54,9 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
  		
  		SessionManager session = new SessionManager(context);
  		session.checkLogin();
+ 		
+ 		song_id=new ArrayList<String>();
+
          
         HashMap<String, String> user = session.getUserDetails();
         final RequestQueue queue = Volley.newRequestQueue(context);
@@ -56,7 +64,7 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
         final String sesid = user.get(SessionManager.KEY_SESSIONID);
         final String sesname = user.get(SessionManager.KEY_SESSIONNAME);
         final String token = user.get(SessionManager.KEY_CSRF);
-        final String event = "3";
+        final String event = "59";
         final String userdata = user.get(SessionManager.KEY_USER);
         
         Log.e("HRCPrevTab",sesid +"   " +sesname+"   " +token +"   " +event+"   " +userdata);
@@ -76,16 +84,17 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
          	        ListView lst = (ListView) getActivity().findViewById(R.id.previouslist);
 
          	        //create the ArrayList to store the titles of nodes
-         	        ArrayList<String> previoussonglistItems=new ArrayList<String>();
-         	        ArrayList<String> previousartlistItems=new ArrayList<String>();
+         	        previoussonglistItems=new ArrayList<String>();
+         	        previousartlistItems=new ArrayList<String>();
 
          	        //iterate through JSON to read the title of nodes
          	        for(int i=0;i<result.length();i++){
          	            try {
          	            	
-         	            	previousartlistItems.add(result.getJSONObject(i).getString("nid").toString());
-         	            	previoussonglistItems.add(result.getJSONObject(i).getString("node_title").toString());
-         	            	
+         	            	previousartlistItems.add(result.getJSONObject(i).getString("node_field_data_field_song_nid").toString());
+         	            	previoussonglistItems.add(result.getJSONObject(i).getString("title").toString());
+        	            	song_id.add(result.getJSONObject(i).getString("nid").toString());
+
          	            } catch (Exception e) {
          	                Log.v("Error adding article", e.getMessage());
          	            }
@@ -94,9 +103,9 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
          	       lst.setOnItemClickListener(new OnItemClickListener() {
          	    	   @Override
          	    	   public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-         	    		   String data=(String)parent.getItemAtPosition(position);
+         	    		  // String data=(String)parent.getItemAtPosition(position);
          	    		  
-         	    		   Log.e("HRC list item",data.toString());
+         	    		 //  Log.e("HRC list item",data.toString());
          	    		   String url = "http://anujkothari.com/hrckaraoke/androidservice/node";
 	         	             
          	    		   final ProgressDialog pDialog = new ProgressDialog(context);
@@ -112,7 +121,7 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
 								e.printStackTrace();
 							}
          	    		   
-         	    		   String params2 = new String("&title=dasdasda&type=request&field_customer[und][0][uid]=[uid:"+userid+"]&field_song[und][0][nid]=[nid:8]&field_event[und][0][nid]=[nid:"+event+"]&field_status[und]=Requested");
+         	    		   String params2 = new String("&title="+previoussonglistItems.get(position) +"&type=request&field_customer[und][0][uid]=[uid:"+userid+"]&field_song[und][0][nid]=[nid:"+ song_id.get(position)+"]&field_event[und][0][nid]=[nid:"+event+"]&field_status[und]=Requested");
          	    		   
          	    		   JsonObjectRequest makeReq = new JsonObjectRequest(Method.POST, url, params2,
 	    		                 new Response.Listener<JSONObject>() {
@@ -121,6 +130,21 @@ public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	    		                     public void onResponse(JSONObject response) {
 	    		                         Log.d("HRCmq", response.toString());
 	    		                         pDialog.hide();
+	    		                         
+	    		                         android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+								    		YourRequest fragment = new YourRequest();
+								    		Bundle args = new Bundle();
+								    		/*args.putString("sendmysong", mysong);
+								    		args.putString("sendmyartist", myartist);
+
+								    		fragment.setArguments(args);*/
+								    		ft.replace(R.id.activity_main_content_fragment, fragment);
+								    		//ft.addToBackStack(null);
+								    		ft.commit();
+								    		((MainActivity) getActivity()).setCountText("Your Request");
+
+								    		((MainActivity) getActivity()).prgmNameList[1]="Your Request";
+								    		((MainActivity) getActivity()).search.setVisibility(View.GONE);
 	    		                     }
 	    		                 }, new Response.ErrorListener() {
 	    		  
