@@ -69,7 +69,7 @@ public class MostPopularTab extends Fragment {
 		final String sesid = user.get(SessionManager.KEY_SESSIONID);
 		final String sesname = user.get(SessionManager.KEY_SESSIONNAME);
 		final String token = user.get(SessionManager.KEY_CSRF);
-		final String event = "3";
+		final String event = "59";
 		final String userdata = user.get(SessionManager.KEY_USER);
 
 		Log.e("HRCMostPopTab", sesid + "   " + sesname + "   " + token + "   "
@@ -98,7 +98,7 @@ public class MostPopularTab extends Fragment {
 						for (int i = 0; i < result.length(); i++) {
 							try {
 								
-	        	            	song_id.add(result.getJSONObject(i).getString("song").toString());
+	        	            	song_id.add(result.getJSONObject(i).getString("nid_1").toString());
 
 								popularartlistItems.add(result.getJSONObject(i)
 										.getString("nid").toString());
@@ -139,11 +139,13 @@ public class MostPopularTab extends Fragment {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
+								
+								System.out.println("this is id  "+song_id.get(position));
 
 								String params2 = new String(
 										"&title=dasdasda&type=request&field_customer[und][0][uid]=[uid:"
 												+ userid
-												+ "]&field_song[und][0][nid]=[nid:"+ song_id+"]&field_event[und][0][nid]=[nid:"
+												+ "]&field_song[und][0][nid]=[nid:"+ song_id.get(position)+"]&field_event[und][0][nid]=[nid:"
 												+ event
 												+ "]&field_status[und]=Requested");
 
