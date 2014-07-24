@@ -109,6 +109,7 @@ public class MostPopularTab extends Fragment {
 								Log.v("Error adding article", e.getMessage());
 							}
 						}
+						final RequestQueue reqqueue = Volley.newRequestQueue(context);
 
 						lst.setOnItemClickListener(new OnItemClickListener() {
 							@Override
@@ -156,6 +157,20 @@ public class MostPopularTab extends Fragment {
 												Log.d("HRCmq",
 														response.toString());
 												pDialog.hide();
+												
+												android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+									    		YourRequest fragment = new YourRequest();
+									    		Bundle args = new Bundle();
+									    		/*args.putString("sendmysong", mysong);
+									    		args.putString("sendmyartist", myartist);
+
+									    		fragment.setArguments(args);*/
+									    		ft.replace(R.id.activity_main_content_fragment, fragment);
+									    		//ft.addToBackStack(null);
+									    		ft.commit();
+									    		((MainActivity) getActivity()).setCountText("Your Request");
+
+									    		((MainActivity) getActivity()).prgmNameList[1]="Your Request";
 											}
 										}, new Response.ErrorListener() {
 
@@ -181,21 +196,9 @@ public class MostPopularTab extends Fragment {
 
 								};
 								
-								android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-					    		YourRequest fragment = new YourRequest();
-					    		Bundle args = new Bundle();
-					    		/*args.putString("sendmysong", mysong);
-					    		args.putString("sendmyartist", myartist);
+								
 
-					    		fragment.setArguments(args);*/
-					    		ft.replace(R.id.activity_main_content_fragment, fragment);
-					    		//ft.addToBackStack(null);
-					    		ft.commit();
-					    		((MainActivity) getActivity()).setCountText("Your Request");
-
-					    		((MainActivity) getActivity()).prgmNameList[1]="Your Request";
-
-								// queue.add(makeReq);
+								 reqqueue.add(makeReq);
 							}
 							
 						});

@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class MainActivity extends FragmentActivity {
 	//private String[] lvMenuItems;
 	ImageButton btMenu;
 	TextView tvTitle;
+	EditText search;
 	public String session_id;
 	public String session_name;
 	
@@ -111,6 +113,7 @@ public class MainActivity extends FragmentActivity {
 		});
 
 		tvTitle = (TextView) findViewById(R.id.activity_main_content_title);
+		search=(EditText)findViewById(R.id.editText1);
 
 		FragmentManager fm = MainActivity.this.getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();
@@ -139,30 +142,40 @@ public class MainActivity extends FragmentActivity {
 
 		if (selectedItem.compareTo("Make Request") == 0) {
 			
-			//search.setVisibility(View.VISIBLE);
+			search.setVisibility(View.VISIBLE);
+			tvTitle.setVisibility(View.GONE);
 
 			fragment = new Request();
 		}
 		else if (selectedItem.compareTo("Your Request") == 0) {
 			
-			//search.setVisibility(View.GONE);
+			search.setVisibility(View.GONE);
+			tvTitle.setVisibility(View.VISIBLE);
 
-			fragment = new Logout();
+
 		} 
 		
 		else if (selectedItem.compareTo("My Profile") == 0) {
 			
-			//search.setVisibility(View.GONE);
+			search.setVisibility(View.GONE);
+			tvTitle.setVisibility(View.VISIBLE);
+
 			fragment = new Profile();
 		} else if (selectedItem.compareTo("Previous Request") == 0) {
 			
-		//	search.setVisibility(View.GONE);
+			search.setVisibility(View.GONE);
+			tvTitle.setVisibility(View.VISIBLE);
+
 			fragment = new Previous();
 		} else if (selectedItem.compareTo("HRC Karaoke Guide") == 0) {
-		//	search.setVisibility(View.GONE);
+			search.setVisibility(View.GONE);
+			tvTitle.setVisibility(View.VISIBLE);
+
 			fragment = new Guide();
 		} else if (selectedItem.compareTo("Explore Events") == 0) {
-		//	search.setVisibility(View.GONE);
+			search.setVisibility(View.GONE);
+			tvTitle.setVisibility(View.VISIBLE);
+
 			fragment = new Others();
 		}
 		else if (selectedItem.compareTo("Logout") == 0) {
