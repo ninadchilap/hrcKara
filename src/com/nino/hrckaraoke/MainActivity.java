@@ -51,6 +51,9 @@ public class MainActivity extends FragmentActivity {
 	ArrayList<String> song_id;
 
 	ArrayList<String> songname;
+	ArrayList<String> songartist;
+	ArrayList<String> song;
+	
 
 	String sesid, sesname;
 	ArrayList prgmName;
@@ -80,8 +83,7 @@ public class MainActivity extends FragmentActivity {
 		}
 
 		session.checkLogin();
- 		song_id=new ArrayList<String>();
-
+ 		
 		HashMap<String, String> user = session.getUserDetails();
 
 		// name
@@ -148,6 +150,8 @@ public class MainActivity extends FragmentActivity {
 		tvTitle = (TextView) findViewById(R.id.activity_main_content_title);
 		search = (AutoCompleteTextView) findViewById(R.id.editText1);
 		
+		/********* code for search *****/
+		
 		search.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -172,7 +176,15 @@ public class MainActivity extends FragmentActivity {
 
 								// create the ArrayList to store the titles of
 								// nodes
-								songname = new ArrayList<String>();
+							
+								song_id=new ArrayList<String>();
+						 		songname = new ArrayList<String>();
+								
+								songartist = new ArrayList<String>();
+								
+								song = new ArrayList<String>();
+
+
 								
 								System.out.println("response from search"+result);
 
@@ -186,9 +198,17 @@ public class MainActivity extends FragmentActivity {
 												.add(result
 														.getJSONObject(i)
 														.getString(
-																"node_title")
+																"title")
 														.toString());
+										songartist
+										.add(result
+												.getJSONObject(i)
+												.getString(
+														"artist")
+												.toString());
 										
+			        	            	song.add(songname.get(i)+" , "+ songartist.get(i));
+
 										
 			        	            	song_id.add(result.getJSONObject(i).getString("nid").toString());
 										
@@ -219,7 +239,7 @@ public class MainActivity extends FragmentActivity {
 												e.printStackTrace();
 											}
 				         	    		   
-				         	    		   String params2 = new String("&title=asassas&type=request&field_customer[und][0][uid]=[uid:"+userid+"]&field_song[und][0][nid]=[nid:"+ song_id.get(position)+"]&field_event[und][0][nid]=[nid:"+event+"]&field_status[und]=Requested");
+				         	    		   String params2 = new String("&title="+songartist.get(position) +"&type=request&field_customer[und][0][uid]=[uid:"+userid+"]&field_song[und][0][nid]=[nid:"+ song_id.get(position)+"]&field_event[und][0][nid]=[nid:"+event+"]&field_status[und]=Requested");
 				         	    		   
 				         	    		   JsonObjectRequest makeReq = new JsonObjectRequest(Method.POST, url, params2,
 					    		                 new Response.Listener<JSONObject>() {
@@ -244,6 +264,7 @@ public class MainActivity extends FragmentActivity {
 
 												    		(MainActivity.this).prgmNameList[1]="Your Request";
 												    		(MainActivity.this).search.setVisibility(View.GONE);
+												    		search.setText("");
 					    		                     }
 					    		                 }, new Response.ErrorListener() {
 					    		  
@@ -267,7 +288,7 @@ public class MainActivity extends FragmentActivity {
 
 								// create array adapter and give it our list of
 								// nodes, pass context, layout and list of items
-								ArrayAdapter arrayAdapter1 = new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1,songname);  
+								ArrayAdapter arrayAdapter1 = new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1,song);  
 										search.setAdapter(arrayAdapter1);
 							}
 						}, new Response.ErrorListener() {
@@ -292,6 +313,8 @@ public class MainActivity extends FragmentActivity {
 				queue.add(req);
 
 			}
+			
+			
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
@@ -306,6 +329,8 @@ public class MainActivity extends FragmentActivity {
 
 			}
 		});
+		
+		/**************************/
 
 		FragmentManager fm = MainActivity.this.getSupportFragmentManager();
 		FragmentTransaction ft = fm.beginTransaction();
